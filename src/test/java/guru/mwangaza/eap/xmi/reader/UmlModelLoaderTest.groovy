@@ -51,4 +51,23 @@ class UmlModelLoaderTest {
 //		println model.getObjectByName("ConditionOccurrence")
 	}
 
+	@Test
+	public void testLoadCIMI() {
+		Map<String, UmlModel> dependencies = new HashMap<String, UmlModel>();
+		loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
+		UmlModel core = loader.loadModelFromClassPath("/xmi/CIMI RM v3.0.5.xml")
+		core.buildIndex();
+		dependencies.put("CIMI RM v3.0.5.mdzip", core);
+		loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
+		loader.setDependencies(dependencies);
+		UmlModel foundation = loader.loadModelFromClassPath("/xmi/CIMI RM Foundation v3.0.5.xml")
+		foundation.buildIndex();
+		dependencies.put("CIMI RM Foundation v3.0.5.mdzip", foundation);
+		loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
+		loader.setDependencies(dependencies);
+		UmlModel clinical = loader.loadModelFromClassPath("/xmi/CIMI RM Clinical v3.0.5.xml")
+		clinical.buildIndex()
+		println clinical
+	}
+
 }

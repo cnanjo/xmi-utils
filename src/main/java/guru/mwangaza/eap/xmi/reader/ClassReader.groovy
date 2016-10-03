@@ -29,7 +29,18 @@ class ClassReader {
 		model.putObject(umlClass.getId(), umlClass)
 		umlClass.setModel(model);
 		classNode.ownedAttribute.each { it -> propertyReader.processOwnedAttribute(it, umlClass, model) }
-		classNode.generalization.each { it -> umlClass.addGeneralizationId(it.'@general') }
+		classNode.generalization.each { generalization ->
+			if (generalization.@general != null && (generalization.@general.size() > 0 || generalization.@general.get(0) != null)) {
+				umlClass.addGeneralizationId(generalization.'@general')
+			} else {
+				umlClass.addGeneralizationId(generalization.general.'@href')
+			}
+		}
+		if(classNode.'@isAbstract' != null) {
+			if(classNode.'@isAbstract'.equalsIgnoreCase("true")) {
+				umlClass.setAbstract(true);
+			}
+		}
 		return umlClass
 	}
 	

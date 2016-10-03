@@ -218,16 +218,31 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 		return clone;
 	}
 	
-	public void findTypeClassForTypeId(Map<String, Identifiable> classIdToClassMap) {
-		UmlClass typeClass = (UmlClass)classIdToClassMap.get(getTypeId());
+	public void findTypeClassForTypeId(UmlModel model) {
+		if(getName() == null) {
+			System.out.println("HERE");
+		}
+		if(typeId == null) {
+			System.out.println("Property " + getName() + " has null type id");
+			return;
+		}
+		UmlClass typeClass = (UmlClass)model.getIdMap().get(getTypeId());
 		if(typeClass != null) {
 			addType(typeClass);
 		} else {
-			//throw new RuntimeException("Unknown class ID: " + getTypeId());
-			if(getTypeId() == null) {
-				System.out.println("Unknown class ID: " + getTypeId());//TODO Handle subsetting and redefinition
+			String[] idComponents = UmlModel.modelPrefix(getTypeId());
+			if(idComponents != null && idComponents.length == 2 && model.getDependency(idComponents[0]) != null) {
+				UmlModel dependency = model.getDependency(idComponents[0]);
+				typeClass = (UmlClass)dependency.getIdMap().get(idComponents[1]);
+			}
+			if(typeClass != null) {
+				addType(typeClass);
 			} else {
-				System.out.println("Unknown class ID: " + getTypeId());//TODO Handle parameters in generics
+				if (getTypeId() == null) {
+					System.out.println("Unknown class ID: " + getTypeId());//TODO Handle subsetting and redefinition
+				} else {
+					System.out.println("Unknown class ID: " + getTypeId());//TODO Handle parameters in generics
+				}
 			}
 		}
 	}

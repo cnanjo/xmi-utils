@@ -17,6 +17,8 @@ public class UmlClass extends UmlComponent implements Identifiable, Cloneable {
 	private List<String> generalizationIds = new ArrayList<String>();
 	private List<UmlProperty> properties = new ArrayList<UmlProperty>();
 	private UmlModel model;
+	private boolean isPrimitive = false;
+	private boolean isAbstract = false;
 	
 	public UmlClass() {}
 	
@@ -77,6 +79,22 @@ public class UmlClass extends UmlComponent implements Identifiable, Cloneable {
 		this.model = model;
 	}
 
+	public boolean isPrimitive() {
+		return isPrimitive;
+	}
+
+	public void setPrimitive(boolean isPrimitive) {
+		this.isPrimitive = isPrimitive;
+	}
+
+	public boolean isAbstract() {
+		return isAbstract;
+	}
+
+	public void setAbstract(boolean isAbstract) {
+		this.isAbstract = isAbstract;
+	}
+
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("UML Classname: ").append(getName());
@@ -105,18 +123,29 @@ public class UmlClass extends UmlComponent implements Identifiable, Cloneable {
 		return builder.toString();
 	}
 	
-	public void findClassForId(Map<String, Identifiable> idToClassMap) {
+	public void findClassForId(UmlModel model) {
 		for(String id: generalizationIds) {
-			UmlClass umlClass = (UmlClass)idToClassMap.get(id);
+			if(id == null) {
+				System.out.println("Class has null parent ID: " + getName());
+				continue;
+			}
+			UmlClass umlClass = (UmlClass)model.getIdMap().get(id);
+			if(umlClass == null) {
+				String[] idComponents = UmlModel.modelPrefix(id);
+				if(idComponents != null && idComponents.length == 2 && model.getDependency(idComponents[0]) != null) {
+					UmlModel dependency = model.getDependency(idComponents[0]);
+					umlClass = (UmlClass)dependency.getIdMap().get(idComponents[1]);
+				}
+			}
 			if(umlClass != null) {
 				generalizations.add(umlClass);
 			} else {
-				throw new RuntimeException("Class not found for ID: " + id);
+				throw new RuntimeException("Class not found for ID: " + id + " and class name " + getName());
 			}
 		}
 		
 		for(UmlProperty property : properties) {
-			property.findTypeClassForTypeId(idToClassMap);
+			property.findTypeClassForTypeId(model);
 		}
 	}
 	

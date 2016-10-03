@@ -25,17 +25,26 @@ class PropertyReader {
 	public UmlProperty readProperty(Node propertyNode, UmlModel model) {
 		def upperValue = propertyNode.upperValue.'@value'[0]
 		def lowerValue = propertyNode.lowerValue.'@value'[0]
-		if(upperValue == "*" || upperValue == "-1") {
-			upperValue = -1
-		} else if(upperValue == null) {
-			upperValue = null;
+		def sth = propertyNode.lowerValue;
+		if(propertyNode.upperValue.size() > 0) {
+			if (upperValue == "*" || upperValue == "-1") {
+				upperValue = -1
+			} else if (upperValue == null) {
+				throw new RuntimeException("Investigate this case. Is there really a default value for upperValue?")
+			} else {
+				upperValue = upperValue.toInteger()
+			}
 		} else {
-			upperValue = upperValue.toInteger()
+			upperValue = 1;
 		}
-		if(lowerValue != null) {
-			lowerValue = lowerValue.toInteger();
+		if(propertyNode.lowerValue.size() > 0) {
+			if (lowerValue != null) {
+				lowerValue = lowerValue.toInteger();
+			} else {
+				lowerValue = 0;
+			}
 		} else {
-			lowerValue = null;
+			lowerValue = 1;
 		}
 		UmlProperty property = new UmlProperty(propertyNode.'@name', 
 			lowerValue,

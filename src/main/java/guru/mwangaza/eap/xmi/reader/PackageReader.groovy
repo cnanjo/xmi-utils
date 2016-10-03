@@ -16,11 +16,13 @@ class PackageReader {
 	def uml
 	def xmi
 	def classReader
+	def datatypeReader
 
 	public PackageReader(Namespace uml, Namespace xmi) {
 		this.uml = uml
 		this.xmi = xmi
 		classReader = new ClassReader(uml, xmi)
+		datatypeReader = new DatatypeReader(uml, xmi)
 	}
 	
 	public UmlPackage readPackage(Node packageNode, UmlModel model) {
@@ -43,6 +45,8 @@ class PackageReader {
 				processPackagedElements(packagedElement.children(), parsedItem, model)
 			} else if(packagedElement.attribute(xmi.type) == 'uml:Class') {
 				classReader.processUmlClass(packagedElement, parent, model)
+			} else if(packagedElement.attribute(xmi.type) == 'uml:DataType') {
+				datatypeReader.processUmlDatatype(packagedElement, parent, model)
 			} else {
 				//throw new RuntimeException("Unknown packagedElement child " + packagedElement.attribute(xmi.type)) 
 			}

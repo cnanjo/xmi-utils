@@ -37,7 +37,7 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 	
 	public void initializePackage(UmlModel model) {
 		for(UmlClass umlClass : getClasses()) {
-			umlClass.findClassForId(model.getIdMap());
+			umlClass.findClassForId(model);
 		}
 		for(UmlPackage umlPackage : packages) {
 			umlPackage.initializePackage(model);
