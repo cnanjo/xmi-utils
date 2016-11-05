@@ -49,6 +49,12 @@ class TemplateBindingReaderTest {
 		binding = textType.getTemplateBinding()
 		assertNotNull(binding)
 		testBindingTextType(binding)
+
+		UmlClass uriType = model.getObjectByName("UriType")
+		assertNotNull(uriType)
+		binding = uriType.getTemplateBinding()
+		assertNotNull(binding)
+		testBindingUriType(binding)
 	}
 
 	public void testBindingDateInterval(UmlTemplateBinding binding) {
@@ -71,12 +77,10 @@ class TemplateBindingReaderTest {
 
 	public void testBindingUriType(UmlTemplateBinding binding) {
 		assertNotNull(binding.getSignature())
-		assertEquals(2, binding.getBindings().size())
+		assertEquals(1, binding.getBindings().size())
 		assertEquals("T", binding.getBindings().get(0).getFormalParameter().getName())
-		assertEquals("U", binding.getBindings().get(1).getFormalParameter().getName())
-		assertEquals("DATE_TIME", binding.getBindings().get(0).getActualParameter().getName())
-		assertEquals("REAL", binding.getBindings().get(1).getActualParameter().getName())
-		assertEquals("INTERVAL_VALUE", binding.getSignature().getOwningClass().getName())
+		assertEquals("URI", binding.getBindings().get(0).getActualParameter().getName())
+		assertEquals("GenericType", binding.getSignature().getOwningClass().getName())
 	}
 
 }
