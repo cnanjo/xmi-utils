@@ -16,11 +16,15 @@ class ClassReader {
 	def uml
 	def xmi
 	def propertyReader
+	def templateReader
+	def templateBindingReader
 
 	public ClassReader(Namespace uml, Namespace xmi) {
 		this.uml = uml
 		this.xmi = xmi
 		propertyReader = new PropertyReader(uml, xmi)
+		templateReader = new TemplateSignatureReader(uml, xmi)
+		templateBindingReader = new TemplateBindingReader(uml, xmi)
 	}
 	
 	public UmlClass readClass(Node classNode, UmlModel model) {
@@ -36,11 +40,16 @@ class ClassReader {
 				umlClass.addGeneralizationId(generalization.general.'@href')
 			}
 		}
-		if(classNode.'@isAbstract' != null) {
-			if(classNode.'@isAbstract'.equalsIgnoreCase("true")) {
-				umlClass.setAbstract(true);
-			}
+		if(classNode.'@isAbstract' != null && classNode.'@isAbstract'.equalsIgnoreCase("true")) {
+			umlClass.setAbstract(true);
 		}
+		classNode.ownedTemplateSignature.each { it -> templateReader.processTemplateSignature(it, umlClass, model) }
+
+		classNode.templateBinding.each { it ->
+			templateBindingReader.processTemplateBinding(it, umlClass, model)
+
+		}
+
 		return umlClass
 	}
 	

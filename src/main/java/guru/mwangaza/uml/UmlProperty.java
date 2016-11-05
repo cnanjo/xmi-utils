@@ -219,22 +219,26 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 	}
 	
 	public void findTypeClassForTypeId(UmlModel model) {
-		if(getName() == null) {
-			System.out.println("HERE");
-		}
 		if(typeId == null) {
 			System.out.println("Property " + getName() + " has null type id");
 			return;
 		}
-		UmlClass typeClass = (UmlClass)model.getIdMap().get(getTypeId());
+		Object object = model.getIdMap().get(getTypeId());
+		UmlClass typeClass = null;
+		if(object instanceof UmlClass) {
+			typeClass = (UmlClass) model.getIdMap().get(getTypeId());
+		} else if(object instanceof UmlTemplateSignature){
+			System.out.println("!!!!!!!");
+			System.out.println(object);
+			System.out.println("=======");
+			String paramName = ((UmlTemplateSignature)object).getParameters().get(0).getName();
+			typeClass = new UmlClass(paramName);
+			System.out.println("FOUND THE TYPE FOR " + getName() + ". It is " + paramName + " and type ID is " + getTypeId());
+		}
 		if(typeClass != null) {
 			addType(typeClass);
 		} else {
-			String[] idComponents = UmlModel.modelPrefix(getTypeId());
-			if(idComponents != null && idComponents.length == 2 && model.getDependency(idComponents[0]) != null) {
-				UmlModel dependency = model.getDependency(idComponents[0]);
-				typeClass = (UmlClass)dependency.getIdMap().get(idComponents[1]);
-			}
+			typeClass = (UmlClass)model.getObjectById(typeId);
 			if(typeClass != null) {
 				addType(typeClass);
 			} else {

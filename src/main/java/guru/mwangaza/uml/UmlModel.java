@@ -1,5 +1,7 @@
 package guru.mwangaza.uml;
 
+import guru.mwangaza.core.utils.CompositeIdentifier;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +61,18 @@ public class UmlModel extends UmlComponent implements Identifiable {
 	}
 	
 	public Object getObjectById(String id) {
-		return idToObjectMap.get(id);
+		Object returnValue;
+		CompositeIdentifier compositeIdentifier = CompositeIdentifier.getCompositeIdentifier(id);
+		if(compositeIdentifier.isComposite()) {
+			UmlModel dependency = getDependency(compositeIdentifier.getModelName());
+			if(dependency == null) {
+				throw new RuntimeException("Invalid dependency " + compositeIdentifier.getModelName());
+			}
+			returnValue = dependency.getIdMap().get(compositeIdentifier.getIdentifier());
+		} else {
+			returnValue = getIdMap().get(compositeIdentifier.getIdentifier());
+		}
+		return returnValue;
 	}
 	
 	public Object getObjectByName(String name) {
@@ -83,15 +96,6 @@ public class UmlModel extends UmlComponent implements Identifiable {
 	public void buildIndex() {
 		for(Identifiable item : idToObjectMap.values()) {
 			nameToObjectMap.put(item.getName(), item);
-		}
-	}
-
-	public static String[] modelPrefix(String componentId) {
-		String[] idComponents = componentId.split("#");
-		if(idComponents.length > 1) {
-			return idComponents;
-		} else {
-			return null;
 		}
 	}
 }

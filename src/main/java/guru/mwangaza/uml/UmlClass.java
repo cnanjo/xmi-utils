@@ -1,8 +1,9 @@
 package guru.mwangaza.uml;
 
+import guru.mwangaza.core.utils.CompositeIdentifier;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents a UML Class
@@ -16,9 +17,12 @@ public class UmlClass extends UmlComponent implements Identifiable, Cloneable {
 	private List<UmlClass> generalizations = new ArrayList<UmlClass>();
 	private List<String> generalizationIds = new ArrayList<String>();
 	private List<UmlProperty> properties = new ArrayList<UmlProperty>();
+	private UmlTemplateSignature templateSignature;
+	private UmlTemplateBinding templateBinding;
 	private UmlModel model;
 	private boolean isPrimitive = false;
 	private boolean isAbstract = false;
+	private boolean isBinding = false;
 	
 	public UmlClass() {}
 	
@@ -95,6 +99,34 @@ public class UmlClass extends UmlComponent implements Identifiable, Cloneable {
 		this.isAbstract = isAbstract;
 	}
 
+	public boolean isGenericType() {
+		return templateSignature != null;
+	}
+
+	public UmlTemplateSignature getTemplateSignature() {
+		return templateSignature;
+	}
+
+	public void setTemplateSignature(UmlTemplateSignature templateSignature) {
+		this.templateSignature = templateSignature;
+	}
+
+	public UmlTemplateBinding getTemplateBinding() {
+		return templateBinding;
+	}
+
+	public void setTemplateBinding(UmlTemplateBinding templateBinding) {
+		this.templateBinding = templateBinding;
+	}
+
+	public boolean isBinding() {
+		return isBinding;
+	}
+
+	public void setBinding(boolean binding) {
+		isBinding = binding;
+	}
+
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("UML Classname: ").append(getName());
@@ -129,14 +161,7 @@ public class UmlClass extends UmlComponent implements Identifiable, Cloneable {
 				System.out.println("Class has null parent ID: " + getName());
 				continue;
 			}
-			UmlClass umlClass = (UmlClass)model.getIdMap().get(id);
-			if(umlClass == null) {
-				String[] idComponents = UmlModel.modelPrefix(id);
-				if(idComponents != null && idComponents.length == 2 && model.getDependency(idComponents[0]) != null) {
-					UmlModel dependency = model.getDependency(idComponents[0]);
-					umlClass = (UmlClass)dependency.getIdMap().get(idComponents[1]);
-				}
-			}
+			UmlClass umlClass = (UmlClass)model.getObjectById(id);
 			if(umlClass != null) {
 				generalizations.add(umlClass);
 			} else {
@@ -147,6 +172,15 @@ public class UmlClass extends UmlComponent implements Identifiable, Cloneable {
 		for(UmlProperty property : properties) {
 			property.findTypeClassForTypeId(model);
 		}
+
+		if(this.getTemplateSignature() != null) {
+			this.getTemplateSignature().populateTemplateSignature(this, model);
+		}
+
+		if(this.getTemplateBinding() != null) {
+			this.getTemplateBinding().populateTemplateBinding(model);
+		}
+
 	}
 	
 	public UmlClass clone() {
