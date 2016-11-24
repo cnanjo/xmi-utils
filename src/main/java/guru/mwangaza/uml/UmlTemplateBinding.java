@@ -1,6 +1,5 @@
 package guru.mwangaza.uml;
 
-import com.sun.xml.internal.rngom.digested.DDataPattern;
 import guru.mwangaza.core.utils.CompositeIdentifier;
 
 import java.util.ArrayList;

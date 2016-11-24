@@ -22,6 +22,7 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 	private List<UmlProperty> mappings;
 	private Map<String,String> aliases;
 	private Map<String, CardinalityRange> cardinalityConstraints;
+	private boolean isGenericType = false;//Indicates whether type is generic
 	
 	public UmlProperty() {
 		cardinality = new CardinalityRange();
@@ -150,7 +151,15 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 			return getName();
 		}
 	}
-	
+
+	public boolean isGenericType() {
+		return isGenericType;
+	}
+
+	public void setGenericType(boolean genericType) {
+		isGenericType = genericType;
+	}
+
 	public Map<String, CardinalityRange> getCardinalityConstraints() {
 		return cardinalityConstraints;
 	}
@@ -233,6 +242,7 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 			System.out.println("=======");
 			String paramName = ((UmlTemplateSignature)object).getParameters().get(0).getName();
 			typeClass = new UmlClass(paramName);
+			setGenericType(true);
 			System.out.println("FOUND THE TYPE FOR " + getName() + ". It is " + paramName + " and type ID is " + getTypeId());
 		}
 		if(typeClass != null) {
