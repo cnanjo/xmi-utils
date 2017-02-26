@@ -71,6 +71,7 @@ class UmlModelLoader {
 		handleUmlPrimitiveTypes(model);
 		packageReader.processPackagedElements(modelNodes[0].children(), model, model)
 		model.populateTypes()
+		model.handleParameterReferences();
 		List<UmlStereotype> stereotypes = processAMLReferenceModelStereotype(node.getAt(rm.ReferenceModel), model)
 		processXmiElementExtensions(node, model)
 		return model

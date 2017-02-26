@@ -2,10 +2,7 @@ package guru.mwangaza.uml;
 
 import guru.mwangaza.core.utils.CompositeIdentifier;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represents a UML class model.
@@ -90,6 +87,31 @@ public class UmlModel extends UmlComponent implements Identifiable {
 	public void populateTypes() {
 		for(UmlPackage umlPackage: packages) {
 			umlPackage.initializePackage(this);
+		}
+	}
+
+	/**
+	 * Two kinds of generic template signature exist: Ones that define inline their parameters and ones that reference
+	 * the parameters defined in other template signature definitions. For the later, if they are processed before signature
+	 * that defines their parameters, the parameter remains a reference without a name and possibly a type. Hence, once the
+	 * components of a model are loaded, it is necessary to do a pass-through to identify all parameter references and flesh
+	 * them out. Doing so requires resolving the parameter reference against its actual definition and setting the state of
+	 * the reference to match the definition.
+	 */
+	public void handleParameterReferences() {
+		Collection<Identifiable> identifiables = idToObjectMap.values();
+		for(Identifiable identifiable : identifiables) {
+			if(identifiable instanceof UmlTemplateSignature) {
+				UmlTemplateSignature signature = (UmlTemplateSignature)identifiable;
+				signature.getParameters().forEach(parameter -> {
+					if(parameter.isParameterReference()) {
+						UmlTemplateParameter definedParameter = (UmlTemplateParameter) idToObjectMap.get(parameter.getId());
+						parameter.setName(definedParameter.getName());
+						parameter.setType(definedParameter.getType());
+						parameter.setTypeId(definedParameter.getTypeId());
+					}
+				});
+			}
 		}
 	}
 	
