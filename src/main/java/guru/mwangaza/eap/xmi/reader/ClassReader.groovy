@@ -18,6 +18,7 @@ class ClassReader {
 	def propertyReader
 	def templateReader
 	def templateBindingReader
+	def documentationReader
 
 	public ClassReader(Namespace uml, Namespace xmi) {
 		this.uml = uml
@@ -25,6 +26,7 @@ class ClassReader {
 		propertyReader = new PropertyReader(uml, xmi)
 		templateReader = new TemplateSignatureReader(uml, xmi)
 		templateBindingReader = new TemplateBindingReader(uml, xmi)
+		documentationReader = new DocumentationReader(uml, xmi)
 	}
 	
 	public UmlClass readClass(Node classNode, UmlModel model) {
@@ -40,6 +42,7 @@ class ClassReader {
 				umlClass.addGeneralizationId(generalization.general.'@href')
 			}
 		}
+		classNode.ownedComment.each { it -> documentationReader.processUmlComment(it, umlClass, model)}
 		if(classNode.'@isAbstract' != null && classNode.'@isAbstract'.equalsIgnoreCase("true")) {
 			umlClass.setAbstract(true);
 		}

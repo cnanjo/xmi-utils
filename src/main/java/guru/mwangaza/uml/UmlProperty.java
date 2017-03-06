@@ -14,7 +14,6 @@ import java.util.Map;
  */
 public class UmlProperty extends UmlComponent implements Cloneable {
 
-	private String documentation;
 	private CardinalityRange cardinality;
 	private List<UmlClass> types;
 	private String typeId;
@@ -89,14 +88,6 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 
 	public void setTypeId(String typeId) {
 		this.typeId = typeId;
-	}
-	
-	public String getDocumentation() {
-		return documentation;
-	}
-
-	public void setDocumentation(String documentation) {
-		this.documentation = documentation;
 	}
 	
 	public UmlClass getSource() {

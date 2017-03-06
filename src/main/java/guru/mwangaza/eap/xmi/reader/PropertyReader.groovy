@@ -16,10 +16,13 @@ class PropertyReader {
 	
 	def uml
 	def xmi
+	def documentationReader
+
 
 	public PropertyReader(Namespace uml, Namespace xmi) {
 		this.uml = uml
 		this.xmi = xmi
+		documentationReader = new DocumentationReader(uml, xmi)
 	}
 
 	public UmlProperty readProperty(Node propertyNode, UmlModel model) {
@@ -62,6 +65,7 @@ class PropertyReader {
 		} else {
 			println "Orphaned property! " + property
 		}
+		propertyNode.ownedComment.each { it -> documentationReader.processUmlComment(it, property, model)}
 		return property
 	}
 	

@@ -13,6 +13,7 @@ public abstract class UmlComponent implements Taggable, Identifiable {
 	private String id;
 	private List<TaggedValue> tags = new ArrayList<TaggedValue>();
 	private Map<String, TaggedValue> indexedLabels = new HashMap<String, TaggedValue>();
+	private String documentation;
 	
 	public String getName() {
 		return name;
@@ -29,7 +30,15 @@ public abstract class UmlComponent implements Taggable, Identifiable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
+	public String getDocumentation() {
+		return documentation;
+	}
+
+	public void setDocumentation(String documentation) {
+		this.documentation = documentation;
+	}
+
 	public List<TaggedValue> getTags() {
 		return tags;
 	}

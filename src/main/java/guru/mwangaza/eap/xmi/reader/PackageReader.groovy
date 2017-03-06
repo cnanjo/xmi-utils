@@ -17,18 +17,21 @@ class PackageReader {
 	def xmi
 	def classReader
 	def datatypeReader
+	def documentationReader
 
 	public PackageReader(Namespace uml, Namespace xmi) {
 		this.uml = uml
 		this.xmi = xmi
 		classReader = new ClassReader(uml, xmi)
 		datatypeReader = new DatatypeReader(uml, xmi)
+		documentationReader = new DocumentationReader(uml, xmi)
 	}
 	
 	public UmlPackage readPackage(Node packageNode, UmlModel model) {
 		UmlPackage umlPackage = new UmlPackage(packageNode.'@name')
 		umlPackage.setId(packageNode.attribute(xmi.id))
 		model.putObject(umlPackage.getId(), umlPackage)
+		packageNode.ownedComment.each { it -> documentationReader.processUmlComment(it, umlPackage, model)}
 		return umlPackage
 	}
 
