@@ -1,5 +1,7 @@
 package guru.mwangaza.eap.xmi.reader
 
+import guru.mwangaza.uml.UmlClass
+
 import static org.junit.Assert.*
 
 import org.junit.After
@@ -68,6 +70,20 @@ class UmlModelLoaderTest {
 		UmlModel clinical = loader.loadModelFromClassPath("/xmi/CIMI RM Clinical v3.0.5.xml")
 		clinical.buildIndex()
 		println clinical
+	}
+
+	@Test
+	public void testLoadCIMICore() {
+		Map<String, UmlModel> dependencies = new HashMap<String, UmlModel>();
+		loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
+		UmlModel core = loader.loadModelFromClassPath("/xmi/CIMI_RM_CORE.v0.0.2.xml")
+		core.buildIndex();
+		Object o = core.getObjectByName("Boolean");
+		assertNotNull(o);
+		assertTrue(o instanceof UmlClass);
+		assertEquals("Boolean", ((UmlClass)o).getName());
+		assertEquals("logical True/False values; usually physically represented as an integer, but need not be", ((UmlClass)o).getDocumentation());
+		println core
 	}
 
 }

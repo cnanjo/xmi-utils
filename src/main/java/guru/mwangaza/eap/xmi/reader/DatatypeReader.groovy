@@ -16,10 +16,12 @@ class DatatypeReader {
 
 	def uml
 	def xmi
+	def documentationReader
 
 	public DatatypeReader(Namespace uml, Namespace xmi) {
 		this.uml = uml
 		this.xmi = xmi
+		documentationReader = new DocumentationReader(uml, xmi)
 	}
 	
 	public UmlClass readDatatype(Node classNode, UmlModel model) {
@@ -27,6 +29,7 @@ class DatatypeReader {
 		umlClass.setPrimitive(true);
 		umlClass.setId(classNode.attribute(xmi.id))
 		umlClass.setProperties(new ArrayList<UmlProperty>())
+		classNode.ownedComment.each { it -> documentationReader.processUmlComment(it, umlClass, model)}
 		model.putObject(umlClass.getId(), umlClass)
 		umlClass.setModel(model);
 		return umlClass
