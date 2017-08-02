@@ -231,10 +231,16 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 			System.out.println("!!!!!!!");
 			System.out.println(object);
 			System.out.println("=======");
-			String paramName = ((UmlTemplateSignature)object).getParameters().get(0).getName();
-			typeClass = new UmlClass(paramName);
 			setGenericType(true);
-			System.out.println("FOUND THE TYPE FOR " + getName() + ". It is " + paramName + " and type ID is " + getTypeId());
+			UmlTemplateSignature signature = (UmlTemplateSignature)object;
+			UmlTemplateParameter param = signature.getParameter(getTypeId());
+			if(param != null) {
+				typeClass = new UmlClass(param.getName());
+				System.out.println("FOUND THE TYPE FOR " + getName() + ". It is " + param.getName() + " and type ID is " + getTypeId());
+			} else {
+				System.out.println("NO PARAMETER FOUND FOR " + getName() + " with type ID " + getTypeId());
+			}
+
 		}
 		if(typeClass != null) {
 			addType(typeClass);

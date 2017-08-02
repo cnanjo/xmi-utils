@@ -37,7 +37,6 @@ public class UmlTemplateSignature extends UmlComponent implements Identifiable, 
 
     public void addTemplateParameter(UmlTemplateParameter parameter) {
         parameters.add(parameter);
-        idToParameterMap.put(parameter.getId(), parameter);
     }
 
     public UmlTemplateParameter getTemplateparameter(String parameterId) {
@@ -53,6 +52,14 @@ public class UmlTemplateSignature extends UmlComponent implements Identifiable, 
     public void populateTemplateSignature(UmlClass parent, UmlModel model) {
         populateTemplateParameters(model);
         setOwningClass(parent);
+    }
+
+    public UmlTemplateParameter getParameter(String id) {
+        return idToParameterMap.get(id);
+    }
+
+    public void putParameter(String id, UmlTemplateParameter param) {
+        idToParameterMap.put(id, param);
     }
 
     public String toString() {

@@ -15,6 +15,7 @@ class TemplateSignatureReader {
     def xmi
     def propertyReader
     def idToParamMap
+    def paramIdToParamMap
 
     public TemplateSignatureReader(Namespace uml, Namespace xmi) {
         this.uml = uml
@@ -37,6 +38,7 @@ class TemplateSignatureReader {
             param.setParameterReference(true)
             umlTemplateSignature.addTemplateParameter(param)
             idToParamMap.put(param.getId(), param)
+            umlTemplateSignature.putParameter(param.getId(), param)
         }
 
         node.ownedParameter.each { it ->
@@ -46,11 +48,13 @@ class TemplateSignatureReader {
                 param = idToParamMap.get(id)
                 if(param == null) { //Do we have a parameter reference? If not, create new param, else, use the one created for the reference and fill its detailed here
                     param = new UmlTemplateParameter()
+                    param.setId(ope.'@templateParameter')
                 }
                 param.setParameterReference(false);
                 param.setName(ope.'@name')
-                param.setId(ope.'@templateParameter')
                 param.setElementId(ope.attribute(xmi.id))
+                idToParamMap.put(param.getElementId(), param)
+                umlTemplateSignature.putParameter(param.getElementId(), param)
                 model.putObject(param.getId(), param)
                 model.putObject(param.getElementId(), umlTemplateSignature)
             }
