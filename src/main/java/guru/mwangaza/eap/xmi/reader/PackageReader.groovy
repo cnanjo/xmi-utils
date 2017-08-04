@@ -19,12 +19,12 @@ class PackageReader {
 	def datatypeReader
 	def documentationReader
 
-	public PackageReader(Namespace uml, Namespace xmi) {
-		this.uml = uml
-		this.xmi = xmi
-		classReader = new ClassReader(uml, xmi)
-		datatypeReader = new DatatypeReader(uml, xmi)
-		documentationReader = new DocumentationReader(uml, xmi)
+	public PackageReader(XmiReaderContext context) {
+		this.uml = context.getNamespace("uml");
+		this.xmi = context.getNamespace("xmi");
+		classReader = new ClassReader(context)
+		datatypeReader = new DatatypeReader(context)
+		documentationReader = new DocumentationReader(context)
 	}
 	
 	public UmlPackage readPackage(Node packageNode, UmlModel model) {
@@ -41,7 +41,7 @@ class PackageReader {
 	
 	def processPackagedElement(Node packagedElement, def parent, UmlModel model) {
 		def parsedItem = null
-		if(packagedElement instanceof Node && ReaderUtils.getLocalName(packagedElement.name()) == "packagedElement") {
+		if(packagedElement instanceof Node && XmiReaderUtils.getLocalName(packagedElement.name()) == "packagedElement") {
 			if(packagedElement.attribute(xmi.type) == 'uml:Package') {
 				parsedItem = readPackage(packagedElement, model)
 				parent.addPackage(parsedItem)

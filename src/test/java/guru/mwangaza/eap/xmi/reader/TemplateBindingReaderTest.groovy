@@ -1,6 +1,5 @@
 package guru.mwangaza.eap.xmi.reader
 
-import guru.mwangaza.uml.TaggedValue
 import guru.mwangaza.uml.UmlClass
 import guru.mwangaza.uml.UmlModel
 import guru.mwangaza.uml.UmlPackage
@@ -20,15 +19,15 @@ class TemplateBindingReaderTest {
 	@Before
 	public void setup() {
 		//Load first model
-		UmlModelLoader loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
-		UmlModel dependency = loader.loadModelFromClassPath("/xmi/GenericTestCore.xml")
+		XmiReader xmiReader = XmiReader.configureDefaultXmiReader();
+		UmlModel dependency = xmiReader.loadModelFromClassPath("/xmi/GenericTestCore.xml")
 		dependency.buildIndex()
 
-		loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
+		xmiReader = XmiReader.configureDefaultXmiReader();
 		Map<String, UmlModel> dependencies = new HashMap<>();
 		dependencies.put("GenericTestCore.xml", dependency)
-		loader.setDependencies(dependencies)
-		model = loader.loadModelFromClassPath("/xmi/GenericTestProject.xml")
+		xmiReader.setDependencies(dependencies)
+		model = xmiReader.loadModelFromClassPath("/xmi/GenericTestProject.xml")
 		model.buildIndex()
 	}
 

@@ -18,10 +18,10 @@ class DatatypeReader {
 	def xmi
 	def documentationReader
 
-	public DatatypeReader(Namespace uml, Namespace xmi) {
-		this.uml = uml
-		this.xmi = xmi
-		documentationReader = new DocumentationReader(uml, xmi)
+	public DatatypeReader(XmiReaderContext context) {
+		this.uml = context.getNamespace("uml")
+		this.xmi = context.getNamespace("xmi")
+		documentationReader = new DocumentationReader(context)
 	}
 	
 	public UmlClass readDatatype(Node classNode, UmlModel model) {

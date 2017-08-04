@@ -9,7 +9,7 @@ import groovy.xml.QName
  * @author cnanjo
  *
  */
-class ReaderUtils {
+class XmiReaderUtils {
 
 	public static String getLocalName(def nodeName) {
 		if(nodeName instanceof QName) {
@@ -23,7 +23,7 @@ class ReaderUtils {
 		if(node == null) {
 			print 'test'
 		}
-		String name = ReaderUtils.getLocalName(node.name())
+		String name = XmiReaderUtils.getLocalName(node.name())
 		if(name == nodeName) {
 			found.add(node);
 		}

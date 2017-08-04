@@ -2,8 +2,6 @@ package guru.mwangaza.eap.xmi.reader
 
 import guru.mwangaza.uml.UmlClass
 import guru.mwangaza.uml.UmlModel
-import guru.mwangaza.uml.UmlTemplateParameter
-import guru.mwangaza.uml.UmlTemplateSignature
 import org.junit.Before
 import org.junit.Test
 
@@ -19,8 +17,8 @@ class GenericClassTest {
 	@Before
 	public void setup() {
 		//Load first model
-		UmlModelLoader loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
-		model = loader.loadModelFromClassPath("/xmi/GenericClassTest.xml")
+		XmiReader xmiReader = XmiReader.configureDefaultXmiReader();
+		model = xmiReader.loadModelFromClassPath("/xmi/GenericClassTest.xml")
 		model.buildIndex()
 	}
 

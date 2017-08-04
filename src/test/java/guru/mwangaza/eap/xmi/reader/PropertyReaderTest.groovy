@@ -11,13 +11,13 @@ import guru.mwangaza.uml.UmlProperty
 class PropertyReaderTest {
 
 	private UmlModel model
-	private UmlModelLoader loader
+	private XmiReader xmiReader
 	private UmlClass childType1
 	
 	@Before
 	public void setup() {
-		loader = new UmlModelLoader()
-		model = loader.loadModel(loader.loadFromStream,"/xmi/XmiUtilsTestProject.xml")
+		xmiReader = XmiReader.configureDefaultXmiReader();
+		model = xmiReader.loadModel(xmiReader.loadFromStream,"/xmi/XmiUtilsTestProject.xml")
 		model.buildIndex()
 		childType1 = model.getObjectByName("ChildType1")
 		assertNotNull(childType1)

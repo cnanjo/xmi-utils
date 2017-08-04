@@ -9,12 +9,12 @@ import guru.mwangaza.uml.UmlModel
 class PackageReaderTest {
 	
 	private UmlModel model
-	private UmlModelLoader loader
+	private XmiReader xmiReader
 	
 	@Before
 	public void setup() {
-		loader = new UmlModelLoader()
-		model = loader.loadModel(loader.loadFromStream,"/xmi/XmiUtilsTestProject.xml")
+		xmiReader = XmiReader.configureDefaultXmiReader();
+		model = xmiReader.loadModel(xmiReader.loadFromStream,"/xmi/XmiUtilsTestProject.xml")
 		model.buildIndex()
 	}
 

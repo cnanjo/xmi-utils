@@ -18,9 +18,9 @@ class DocumentationReader {
 	def uml
 	def xmi
 
-	public DocumentationReader(Namespace uml, Namespace xmi) {
-		this.uml = uml
-		this.xmi = xmi
+	public DocumentationReader(XmiReaderContext context) {
+		this.uml = context.getNamespace("uml")
+		this.xmi = context.getNamespace("xmi")
 	}
 	
 	public UmlComment readDocumentation(Node commentNode, UmlModel model) {

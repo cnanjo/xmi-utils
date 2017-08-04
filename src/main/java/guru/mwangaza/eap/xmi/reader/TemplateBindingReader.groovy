@@ -17,9 +17,9 @@ class TemplateBindingReader {
     def propertyReader
     def idToParamMap
 
-    public TemplateBindingReader(Namespace uml, Namespace xmi) {
-        this.uml = uml
-        this.xmi = xmi
+    public TemplateBindingReader(XmiReaderContext context) {
+        this.uml = context.getNamespace("uml")
+        this.xmi = context.getNamespace("xmi")
     }
 
     /**

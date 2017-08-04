@@ -19,10 +19,10 @@ class PropertyReader {
 	def documentationReader
 
 
-	public PropertyReader(Namespace uml, Namespace xmi) {
-		this.uml = uml
-		this.xmi = xmi
-		documentationReader = new DocumentationReader(uml, xmi)
+	public PropertyReader(XmiReaderContext context) {
+		this.uml = context.getNamespace("uml")
+		this.xmi = context.getNamespace("xmi")
+		documentationReader = new DocumentationReader(context)
 	}
 
 	public UmlProperty readProperty(Node propertyNode, UmlModel model) {

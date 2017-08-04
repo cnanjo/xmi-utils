@@ -1,6 +1,5 @@
 package guru.mwangaza.eap.xmi.reader
 
-import groovy.xml.Namespace
 import guru.mwangaza.uml.TaggedValue
 import guru.mwangaza.uml.UmlClass
 import guru.mwangaza.uml.UmlComponent
@@ -10,46 +9,26 @@ import guru.mwangaza.uml.UmlProfileDefinition
 import guru.mwangaza.uml.UmlProperty
 import guru.mwangaza.uml.UmlStereotype
 
+class XmiReader extends BaseXmiReader {
 
-/**
- * Reader used to unmarshal an XMI 2.1 UML model.
- * 
- * @author cnanjo
- *
- */
-class UmlModelLoader {
-
-	public static final String DEFAULT_XMI_NAMESPACE = "http://www.omg.org/spec/XMI/20131001"
-	public static final String DEFAULT_UML_NAMESPACE = "http://www.omg.org/spec/UML/20131001"
-	public static final String DEFAULT_XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
-	public static final String AML_RM_NAMESPACE = "http://www.omg.org/spec/AML/20150501/ReferenceModelProfile.xmi"
-	
-	Namespace uml
-	Namespace xmi
-	Namespace xsi
-	Namespace rm
+	XmiReaderContext context;
 	PackageReader packageReader
-	Map<String, UmlModel> dependencies
-	Map<String, UmlProfileDefinition> profileDefinitions = new HashMap<>();
-	Map<String, UmlStereotype> stereotypeDefinitions = new HashMap<>();
+	Map<String, UmlModel> dependencies = new HashMap<>()
+	Map<String, UmlProfileDefinition> profileDefinitions = new HashMap<>()
+	Map<String, UmlStereotype> stereotypeDefinitions = new HashMap<>()
 	ProfileReader profileReader
+
+	def uml
+	def xmi
 
 	def loadFromFilePath = {filePath -> new XmlParser().parse(new File(filePath))}
 	def loadFromStream = {filePath -> new XmlParser().parse((InputStream)getClass().getResourceAsStream(filePath))}
 
-	public UmlModelLoader() {
-		uml = new groovy.xml.Namespace(DEFAULT_UML_NAMESPACE, 'uml')
-		xmi = new groovy.xml.Namespace(DEFAULT_XMI_NAMESPACE, 'xmi')
-		xsi = new groovy.xml.Namespace(DEFAULT_XSI_NAMESPACE, 'xsi')
-		rm = new groovy.xml.Namespace(AML_RM_NAMESPACE, 'rm')
-		packageReader = new PackageReader(uml, xmi)
-	}
-
-	public UmlModelLoader(String umlNamespace, String xmiNamespace) {
-		uml = new groovy.xml.Namespace(umlNamespace, 'uml')
-		xmi = new groovy.xml.Namespace(xmiNamespace, 'xmi')
-		rm = new groovy.xml.Namespace(AML_RM_NAMESPACE, 'rm')
-		packageReader = new PackageReader(uml, xmi)
+	public XmiReader(XmiReaderContext context) {
+		this.context = context
+		this.uml = context.getNamespace("uml")
+		this.xmi = context.getNamespace("xmi")
+		packageReader = new PackageReader(context)
 	}
 
 	def addProfileReader(ProfileReader reader) {
@@ -79,7 +58,7 @@ class UmlModelLoader {
 
 	def UmlModel processModel(Node node) {
 		List<Node> modelNodes = new ArrayList<Node>()
-		ReaderUtils.findNodes(node, modelNodes, "Model")
+		XmiReaderUtils.findNodes(node, modelNodes, "Model")
 		UmlModel model = new UmlModel(modelNodes[0].'@name')
 		if(dependencies != null) {
 			model.setDependencies(dependencies)
@@ -88,14 +67,14 @@ class UmlModelLoader {
 		packageReader.processPackagedElements(modelNodes[0].children(), model, model)
 		if(profileReader != null) {
 			List<Node> umlProfiles = new ArrayList<>();
-			ReaderUtils.findNodes(node, umlProfiles, "Profile")
+			XmiReaderUtils.findNodes(node, umlProfiles, "Profile")
 			umlProfiles.each { profileNode ->
 				profileReader.processUmlProfile(profileNode, model);
 			}
 		}
 		model.populateTypes()
 		model.handleParameterReferences();
-		List<UmlStereotype> stereotypes = processAMLReferenceModelStereotype(node.getAt(rm.ReferenceModel), model)
+		//List<UmlStereotype> stereotypes = processAMLReferenceModelStereotype(node.getAt(rm.ReferenceModel), model)
 		processXmiElementExtensions(node, model)
 		processProfileDefinition(node, model)
 		return model
@@ -198,7 +177,7 @@ class UmlModelLoader {
 			umlProfileDefinition.getStereotypes().each {
 				umlStereotypeDefinition ->
 					if(umlStereotypeDefinition != null) {
-						ReaderUtils.findNodes(rootXmlNode, foundStereotypeNodes, umlStereotypeDefinition.getName())
+						XmiReaderUtils.findNodes(rootXmlNode, foundStereotypeNodes, umlStereotypeDefinition.getName())
 						foundStereotypeNodes.each { foundStereotypeNode ->
 							UmlComponent umlComponent = null;
 							UmlStereotype stereotype = new UmlStereotype()
@@ -228,6 +207,27 @@ class UmlModelLoader {
 			}
 
 		}
+	}
+
+	/**
+	 * Factory method for the creation of a new XMI Reader configured will all default settings.
+	 *
+	 * @return
+	 */
+	public static XmiReader configureDefaultXmiReader() {
+		XmiReaderContext context = new XmiReaderContext();
+		context.addNamespace("uml", new groovy.xml.Namespace(XmiReaderContext.DEFAULT_UML_NAMESPACE, "uml"));
+		context.addNamespace("xmi", new groovy.xml.Namespace(XmiReaderContext.DEFAULT_XMI_NAMESPACE, "xmi"));
+		context.addNamespace("xsi", new groovy.xml.Namespace(XmiReaderContext.DEFAULT_XSI_NAMESPACE, "xsi"));
+		context.addNamespace("rm", new groovy.xml.Namespace(XmiReaderContext.AML_RM_NAMESPACE, "rm"));
+		XmiReader xmiReader = new XmiReader(context);
+		return xmiReader;
+	}
+
+	public static XmiReader configureDefaultMagicDrawXmiReader() {
+		XmiReader xmiReader = configureDefaultXmiReader()
+		xmiReader.addProfileReader(new MagicDrawProfileReader(xmiReader.getContext()))
+		return xmiReader
 	}
 	
 }

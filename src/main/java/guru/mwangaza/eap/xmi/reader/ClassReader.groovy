@@ -20,13 +20,13 @@ class ClassReader {
 	def templateBindingReader
 	def documentationReader
 
-	public ClassReader(Namespace uml, Namespace xmi) {
-		this.uml = uml
-		this.xmi = xmi
-		propertyReader = new PropertyReader(uml, xmi)
-		templateReader = new TemplateSignatureReader(uml, xmi)
-		templateBindingReader = new TemplateBindingReader(uml, xmi)
-		documentationReader = new DocumentationReader(uml, xmi)
+	public ClassReader(XmiReaderContext context) {
+		this.uml = context.getNamespace("uml");
+		this.xmi = context.getNamespace("xmi");
+		propertyReader = new PropertyReader(context)
+		templateReader = new TemplateSignatureReader(context)
+		templateBindingReader = new TemplateBindingReader(context)
+		documentationReader = new DocumentationReader(context)
 	}
 	
 	public UmlClass readClass(Node classNode, UmlModel model) {

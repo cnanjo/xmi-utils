@@ -14,15 +14,14 @@ import static org.junit.Assert.assertNotNull
 class ClassReaderTest {
 	
 	private UmlModel model
-	private UmlModelLoader loader
+	private XmiReader xmiReader
 	private List<UmlClass> classes1
 	private List<UmlClass> classes2
 	
 	@Before
 	public void setup() {
-		loader = new UmlModelLoader()
-		loader.addProfileReader(new MagicDrawProfileReader(loader.uml, loader.xmi, loader.xsi, 'http://www.google.com'));
-		model = loader.loadModel(loader.loadFromStream,"/xmi/XmiUtilsTestProject.xml")
+		xmiReader = XmiReader.configureDefaultMagicDrawXmiReader();
+		model = xmiReader.loadModel(xmiReader.loadFromStream,"/xmi/XmiUtilsTestProject.xml")
 		model.buildIndex()
 	}
 

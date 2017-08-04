@@ -30,11 +30,10 @@ class MagicDrawProfileReader extends ProfileReader {
     def xsi
     def uri
 
-    public MagicDrawProfileReader(Namespace uml, Namespace xmi, Namespace xsi, String uri) {
-        this.uml = uml
-        this.xmi = xmi
-        this.xsi = xsi
-        this.uri = uri
+    public MagicDrawProfileReader(XmiReaderContext context) {
+        this.uml = context.getNamespace("uml")
+        this.xmi = context.getNamespace("xmi")
+        this.xsi = context.getNamespace("xsi")
     }
 
     public UmlProfileDefinition readProfile(Node umlProfileNode, UmlModel model) {

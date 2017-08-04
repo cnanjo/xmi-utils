@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import guru.mwangaza.eap.xmi.reader.ReaderUtils;
+import guru.mwangaza.eap.xmi.reader.XmiReaderUtils;
 
 public abstract class UmlComponent implements Taggable, Identifiable {
 	
@@ -141,7 +141,7 @@ public abstract class UmlComponent implements Taggable, Identifiable {
 		for(TaggedValue tag : tags) {
 			if(tag.getKey().length() > tagPrefix.length() && tag.getKey().startsWith(tagPrefix)) {
 				String suffix = tag.getKey().substring(tagPrefix.length() + 1, tag.getKey().length());
-				if(ReaderUtils.isInteger(suffix)) {
+				if(XmiReaderUtils.isInteger(suffix)) {
 					groupedTags.add(tag);
 				}
 			}

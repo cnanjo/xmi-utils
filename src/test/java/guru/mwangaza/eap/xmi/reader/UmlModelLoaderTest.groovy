@@ -11,12 +11,12 @@ import guru.mwangaza.uml.UmlModel
 
 class UmlModelLoaderTest {
 	
-	def loader
+	def xmiReader
 	def resourcePath = "/xmi/CIMI_Model.xmi";
 
 	@Before
 	public void setUp() throws Exception {
-		loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
+		xmiReader = XmiReader.configureDefaultXmiReader();
 	}
 
 	@After
@@ -25,17 +25,17 @@ class UmlModelLoaderTest {
 
 	@Test
 	public void testLoadFromFilePath() {
-		loader.loadFromStream(resourcePath)
+		xmiReader.loadFromStream(resourcePath)
 	}
 	
 	@Test
 	public void testLoadFromClassPath() {
-		assertNotNull(loader.loadModelFromClassPath(resourcePath))
+		assertNotNull(xmiReader.loadModelFromClassPath(resourcePath))
 	}
 
 	@Test
 	public void testLoadModel() {
-		UmlModel model = loader.loadModel(loader.loadFromStream,resourcePath)
+		UmlModel model = xmiReader.loadModel(xmiReader.loadFromStream,resourcePath)
 		model.buildIndex()
 		println model
 //		UmlPackage topLevelPackage = model.getPackages().get(0);
@@ -56,18 +56,18 @@ class UmlModelLoaderTest {
 	@Test
 	public void testLoadCIMI() {
 		Map<String, UmlModel> dependencies = new HashMap<String, UmlModel>();
-		loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
-		UmlModel core = loader.loadModelFromClassPath("/xmi/CIMI RM v3.0.5.xml")
+		xmiReader = XmiReader.configureDefaultXmiReader();
+		UmlModel core = xmiReader.loadModelFromClassPath("/xmi/CIMI RM v3.0.5.xml")
 		core.buildIndex();
 		dependencies.put("CIMI RM v3.0.5.mdzip", core);
-		loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
-		loader.setDependencies(dependencies);
-		UmlModel foundation = loader.loadModelFromClassPath("/xmi/CIMI RM Foundation v3.0.5.xml")
+		xmiReader = XmiReader.configureDefaultXmiReader();
+		xmiReader.setDependencies(dependencies);
+		UmlModel foundation = xmiReader.loadModelFromClassPath("/xmi/CIMI RM Foundation v3.0.5.xml")
 		foundation.buildIndex();
 		dependencies.put("CIMI RM Foundation v3.0.5.mdzip", foundation);
-		loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
-		loader.setDependencies(dependencies);
-		UmlModel clinical = loader.loadModelFromClassPath("/xmi/CIMI RM Clinical v3.0.5.xml")
+		xmiReader = XmiReader.configureDefaultXmiReader();
+		xmiReader.setDependencies(dependencies);
+		UmlModel clinical = xmiReader.loadModelFromClassPath("/xmi/CIMI RM Clinical v3.0.5.xml")
 		clinical.buildIndex()
 		println clinical
 	}
@@ -75,8 +75,8 @@ class UmlModelLoaderTest {
 	@Test
 	public void testLoadCIMICore() {
 		Map<String, UmlModel> dependencies = new HashMap<String, UmlModel>();
-		loader = new UmlModelLoader("http://www.omg.org/spec/UML/20131001", "http://www.omg.org/spec/XMI/20131001")
-		UmlModel core = loader.loadModelFromClassPath("/xmi/CIMI_RM_CORE.v0.0.2.xml")
+		xmiReader = XmiReader.configureDefaultXmiReader();
+		UmlModel core = xmiReader.loadModelFromClassPath("/xmi/CIMI_RM_CORE.v0.0.2.xml")
 		core.buildIndex();
 		Object o = core.getObjectByName("Boolean");
 		assertNotNull(o);

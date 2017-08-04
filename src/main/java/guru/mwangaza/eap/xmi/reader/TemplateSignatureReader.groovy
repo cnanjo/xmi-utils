@@ -17,10 +17,10 @@ class TemplateSignatureReader {
     def idToParamMap
     def paramIdToParamMap
 
-    public TemplateSignatureReader(Namespace uml, Namespace xmi) {
-        this.uml = uml
-        this.xmi = xmi
-        propertyReader = new PropertyReader(uml, xmi)
+    public TemplateSignatureReader(XmiReaderContext context) {
+        this.uml = context.getNamespace("uml")
+        this.xmi = context.getNamespace("xmi")
+        propertyReader = new PropertyReader(context)
         idToParamMap = new HashMap<String, UmlTemplateParameter>()
     }
 
