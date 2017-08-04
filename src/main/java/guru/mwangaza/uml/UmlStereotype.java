@@ -1,17 +1,19 @@
 package guru.mwangaza.uml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cnanjo on 10/4/16.
  */
 public class UmlStereotype extends UmlComponent implements Identifiable, Cloneable {
     private String basePackageId;
-    private List<TaggedValue> taggedValues;
+    private Map<String, TaggedValue> taggedValues;
 
     public UmlStereotype() {
-        taggedValues = new ArrayList<>();
+        taggedValues = new HashMap<>();
     }
 
     public String getBasePackageId() {
@@ -22,24 +24,17 @@ public class UmlStereotype extends UmlComponent implements Identifiable, Cloneab
         this.basePackageId = basePackageId;
     }
 
-    public List<TaggedValue> getTaggedValues() {
+    public Map<String, TaggedValue> getTaggedValues() {
         return taggedValues;
     }
 
-    public void setTaggedValues(List<TaggedValue> taggedValues) {
+    public void setTaggedValues(Map<String, TaggedValue> taggedValues) {
         this.taggedValues = taggedValues;
     }
 
     public void addTaggedValue(TaggedValue taggedValue) {
-        this.taggedValues.add(taggedValue);
+        this.taggedValues.put(taggedValue.getKey(), taggedValue);
     }
 
-    public String getTaggedValue(String key) {
-        for(TaggedValue tag : taggedValues) {
-            if(tag.getKey().equalsIgnoreCase(key)) {
-                return tag.getValue();
-            }
-        }
-        return null;
-    }
+    public TaggedValue getTaggedValue(String key) {return this.taggedValues.get(key);}
 }

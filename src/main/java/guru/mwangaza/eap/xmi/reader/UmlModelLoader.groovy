@@ -3,8 +3,10 @@ package guru.mwangaza.eap.xmi.reader
 import groovy.xml.Namespace
 import guru.mwangaza.uml.TaggedValue
 import guru.mwangaza.uml.UmlClass
+import guru.mwangaza.uml.UmlComponent
 import guru.mwangaza.uml.UmlModel
 import guru.mwangaza.uml.UmlPackage
+import guru.mwangaza.uml.UmlProfileDefinition
 import guru.mwangaza.uml.UmlProperty
 import guru.mwangaza.uml.UmlStereotype
 
@@ -19,13 +21,18 @@ class UmlModelLoader {
 
 	public static final String DEFAULT_XMI_NAMESPACE = "http://www.omg.org/spec/XMI/20131001"
 	public static final String DEFAULT_UML_NAMESPACE = "http://www.omg.org/spec/UML/20131001"
+	public static final String DEFAULT_XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
 	public static final String AML_RM_NAMESPACE = "http://www.omg.org/spec/AML/20150501/ReferenceModelProfile.xmi"
 	
 	Namespace uml
 	Namespace xmi
+	Namespace xsi
 	Namespace rm
 	PackageReader packageReader
 	Map<String, UmlModel> dependencies
+	Map<String, UmlProfileDefinition> profileDefinitions = new HashMap<>();
+	Map<String, UmlStereotype> stereotypeDefinitions = new HashMap<>();
+	ProfileReader profileReader
 
 	def loadFromFilePath = {filePath -> new XmlParser().parse(new File(filePath))}
 	def loadFromStream = {filePath -> new XmlParser().parse((InputStream)getClass().getResourceAsStream(filePath))}
@@ -33,6 +40,7 @@ class UmlModelLoader {
 	public UmlModelLoader() {
 		uml = new groovy.xml.Namespace(DEFAULT_UML_NAMESPACE, 'uml')
 		xmi = new groovy.xml.Namespace(DEFAULT_XMI_NAMESPACE, 'xmi')
+		xsi = new groovy.xml.Namespace(DEFAULT_XSI_NAMESPACE, 'xsi')
 		rm = new groovy.xml.Namespace(AML_RM_NAMESPACE, 'rm')
 		packageReader = new PackageReader(uml, xmi)
 	}
@@ -42,6 +50,10 @@ class UmlModelLoader {
 		xmi = new groovy.xml.Namespace(xmiNamespace, 'xmi')
 		rm = new groovy.xml.Namespace(AML_RM_NAMESPACE, 'rm')
 		packageReader = new PackageReader(uml, xmi)
+	}
+
+	def addProfileReader(ProfileReader reader) {
+		this.profileReader = reader
 	}
 	
 	def UmlModel loadModel(def loadClosure, def loadArguments) {
@@ -61,6 +73,10 @@ class UmlModelLoader {
 		return model
 	}
 
+	def addProfileDefinition(UmlProfileDefinition profileDefinition) {
+		this.addProfileDefinition(profileDefinition)
+	}
+
 	def UmlModel processModel(Node node) {
 		List<Node> modelNodes = new ArrayList<Node>()
 		ReaderUtils.findNodes(node, modelNodes, "Model")
@@ -70,10 +86,18 @@ class UmlModelLoader {
 		}
 		handleUmlPrimitiveTypes(model);
 		packageReader.processPackagedElements(modelNodes[0].children(), model, model)
+		if(profileReader != null) {
+			List<Node> umlProfiles = new ArrayList<>();
+			ReaderUtils.findNodes(node, umlProfiles, "Profile")
+			umlProfiles.each { profileNode ->
+				profileReader.processUmlProfile(profileNode, model);
+			}
+		}
 		model.populateTypes()
 		model.handleParameterReferences();
 		List<UmlStereotype> stereotypes = processAMLReferenceModelStereotype(node.getAt(rm.ReferenceModel), model)
 		processXmiElementExtensions(node, model)
+		processProfileDefinition(node, model)
 		return model
 	}
 
@@ -164,6 +188,45 @@ class UmlModelLoader {
 				attribute.setDocumentation(documentation)
 			}
 			processTags(attribute, it)
+		}
+	}
+
+	//Experimental
+	def processProfileDefinition(def rootXmlNode, UmlModel model) {
+		List<Node> foundStereotypeNodes = new ArrayList<>()
+		model.getProfileDefinitionMap().each { profileName, umlProfileDefinition ->
+			umlProfileDefinition.getStereotypes().each {
+				umlStereotypeDefinition ->
+					if(umlStereotypeDefinition != null) {
+						ReaderUtils.findNodes(rootXmlNode, foundStereotypeNodes, umlStereotypeDefinition.getName())
+						foundStereotypeNodes.each { foundStereotypeNode ->
+							UmlComponent umlComponent = null;
+							UmlStereotype stereotype = new UmlStereotype()
+							stereotype.setName(umlStereotypeDefinition.getName())
+							Collection<TaggedValue> tags = umlStereotypeDefinition.getTaggedValues().values()
+							tags.each { tag ->
+								def tagValue = foundStereotypeNode.attribute(tag.getKey())
+								if (tag != null && tag.getKey().equalsIgnoreCase("base_Element") || tag.getKey().equalsIgnoreCase("base_Package")) {
+									umlComponent = model.getObjectById(tagValue);
+								}
+								if (tagValue == null) {
+									String tagAsElementName = tag.getKey().replaceAll('-', '_')
+									def nodeList = foundStereotypeNode."${tagAsElementName}"
+									if (nodeList.size() == 1) {
+										tagValue = foundStereotypeNode.text()
+									} else if (nodeList.size() > 1) {
+										print "More than one tag value element with that name"
+									}
+								}
+								stereotype.addTaggedValue(new TaggedValue(tag.getKey(), tagValue))
+							}
+							if (umlComponent != null) {
+								umlComponent.setStereotype(stereotype)
+							}
+						}
+					}
+			}
+
 		}
 	}
 	

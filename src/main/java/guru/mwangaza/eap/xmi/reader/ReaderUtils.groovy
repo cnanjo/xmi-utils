@@ -20,6 +20,9 @@ class ReaderUtils {
 	}
 	
 	public static void findNodes(Node node, List<Node> found, String nodeName) {
+		if(node == null) {
+			print 'test'
+		}
 		String name = ReaderUtils.getLocalName(node.name())
 		if(name == nodeName) {
 			found.add(node);
@@ -31,7 +34,7 @@ class ReaderUtils {
 			}
 		}
 	}
-	
+
 	public static boolean isInteger(String s) {
 		try {
 			Integer.parseInt(s);

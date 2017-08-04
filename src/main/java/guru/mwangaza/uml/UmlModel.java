@@ -16,12 +16,14 @@ public class UmlModel extends UmlComponent implements Identifiable {
 	private Map<String, Identifiable> idToObjectMap;
 	private Map<String, Identifiable> nameToObjectMap;
 	private Map<String, UmlModel> dependencies;
+	private Map<String, UmlProfileDefinition> profileDefinitionMap;
 
 	public UmlModel() {
 		packages = new ArrayList<UmlPackage>();
 		idToObjectMap = new HashMap<String, Identifiable>();
 		nameToObjectMap = new HashMap<String, Identifiable>();
 		dependencies = new HashMap<String, UmlModel>();
+		profileDefinitionMap = new HashMap<>();
 	}
 	
 	public UmlModel(String name) {
@@ -52,7 +54,19 @@ public class UmlModel extends UmlComponent implements Identifiable {
 	public List<UmlPackage> getPackages() {
 		return packages;
 	}
-	
+
+	public Map<String, UmlProfileDefinition> getProfileDefinitionMap() {
+		return profileDefinitionMap;
+	}
+
+	public void setProfileDefinitionMap(Map<String, UmlProfileDefinition> profileDefinitionMap) {
+		this.profileDefinitionMap = profileDefinitionMap;
+	}
+
+	public void addProfile(UmlProfileDefinition profileDefinition) {
+		this.profileDefinitionMap.put(profileDefinition.getName(), profileDefinition);
+	}
+
 	public String toString() {
 		return "Model: " + packages;
 	}
