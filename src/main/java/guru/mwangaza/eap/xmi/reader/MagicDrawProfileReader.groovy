@@ -1,6 +1,5 @@
 package guru.mwangaza.eap.xmi.reader
 
-import groovy.xml.Namespace
 import guru.mwangaza.uml.TaggedValue
 import guru.mwangaza.uml.UmlModel
 import guru.mwangaza.uml.UmlProfileDefinition
@@ -24,7 +23,7 @@ import guru.mwangaza.uml.UmlStereotype
  * Created by cnanjo on 8/2/17.
  */
 
-class MagicDrawProfileReader extends ProfileReader {
+class MagicDrawProfileReader extends BaseProfileReader {
     def uml
     def xmi
     def xsi

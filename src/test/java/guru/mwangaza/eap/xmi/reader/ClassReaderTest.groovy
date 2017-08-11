@@ -61,27 +61,4 @@ class ClassReaderTest {
 		assertNotNull("test-tag-1", child.getStereotype().getTaggedValue("test-tag-1").getKey())
 		assertEquals("Value 1", child.getStereotype().getTaggedValue("test-tag-1").getValue())
 	}
-
-	@Test
-	public void testProfileLoading() {
-
-	}
-
-//	@Test
-//	public void testGetTaggedValueByKey() {
-//		UmlClass child = model.getObjectByName("Child")
-//		assertNotNull(child)
-//		child.buildTaggedValueIndex()
-//		TaggedValue tag = child.getTaggedValueByKey("map.fhir.class");
-//		assertNotNull(tag)
-//	}
-//
-//	@Test
-//	public void testGeneralizationLoading() {
-//		UmlClass child = model.getObjectByName("Child")
-//		assertNotNull(child)
-//		assertEquals(2, child.getGeneralizations().size())
-//		assertEquals("Parent1", child.getGeneralizations()[0].getName())
-//		assertEquals("Parent2", child.getGeneralizations()[1].getName())
-//	}
 }

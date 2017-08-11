@@ -16,7 +16,7 @@ class XmiReader extends BaseXmiReader {
 	Map<String, UmlModel> dependencies = new HashMap<>()
 	Map<String, UmlProfileDefinition> profileDefinitions = new HashMap<>()
 	Map<String, UmlStereotype> stereotypeDefinitions = new HashMap<>()
-	ProfileReader profileReader
+	BaseProfileReader profileReader
 
 	def uml
 	def xmi
@@ -31,7 +31,7 @@ class XmiReader extends BaseXmiReader {
 		packageReader = new PackageReader(context)
 	}
 
-	def addProfileReader(ProfileReader reader) {
+	def addProfileReader(BaseProfileReader reader) {
 		this.profileReader = reader
 	}
 	
@@ -65,6 +65,17 @@ class XmiReader extends BaseXmiReader {
 		}
 		handleUmlPrimitiveTypes(model);
 		packageReader.processPackagedElements(modelNodes[0].children(), model, model)
+
+		def profileNodes = node.depthFirst().findAll { it ->
+			it.name() == 'packagedElement' && it.attribute(xmi.type) == 'uml:Profile'
+		}
+
+		profileNodes.each { it ->
+			ProfileReader reader = new ProfileReader(getContext())
+			reader.processUmlProfile(it, model);
+		}
+
+		//Handle finding profiles through extensions
 		if(profileReader != null) {
 			List<Node> umlProfiles = new ArrayList<>();
 			XmiReaderUtils.findNodes(node, umlProfiles, "Profile")

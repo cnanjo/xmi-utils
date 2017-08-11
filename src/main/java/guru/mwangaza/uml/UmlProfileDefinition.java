@@ -23,11 +23,9 @@ import java.util.List;
 
 public class UmlProfileDefinition extends UmlComponent implements Identifiable{
     private String projectName;
-    private String uri;
-    private List<UmlStereotype> stereotypes;
+    private List<UmlStereotypeDefinition> stereotypes;
 
-    public UmlProfileDefinition(String name, String uri) {
-        this.uri = uri;
+    public UmlProfileDefinition(String name) {
         setName(name);
         stereotypes = new ArrayList<>();
     }
@@ -40,23 +38,15 @@ public class UmlProfileDefinition extends UmlComponent implements Identifiable{
         this.projectName = projectName;
     }
 
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public List<UmlStereotype> getStereotypes() {
+    public List<UmlStereotypeDefinition> getStereotypes() {
         return stereotypes;
     }
 
-    public void setStereotypes(List<UmlStereotype> stereotypes) {
+    public void setStereotypes(List<UmlStereotypeDefinition> stereotypes) {
         this.stereotypes = stereotypes;
     }
 
-    public void addStereotype(UmlStereotype stereotype) {
+    public void addStereotype(UmlStereotypeDefinition stereotype) {
         this.stereotypes.add(stereotype);
     }
 }

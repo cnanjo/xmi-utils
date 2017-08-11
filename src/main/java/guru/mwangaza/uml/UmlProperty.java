@@ -22,6 +22,7 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 	private Map<String,String> aliases;
 	private Map<String, CardinalityRange> cardinalityConstraints;
 	private boolean isGenericType = false;//Indicates whether type is generic
+	private UmlVisibility visibility;
 	
 	public UmlProperty() {
 		cardinality = new CardinalityRange();
@@ -133,7 +134,15 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 	public void clearAliases() {
 		aliases.clear();
 	}
-	
+
+	public UmlVisibility getVisibility() {
+		return visibility;
+	}
+
+	public void setVisibility(UmlVisibility visibility) {
+		this.visibility = visibility;
+	}
+
 	public String getNameForScope(String scope) {
 		String alias = getAliasForScope(scope);
 		if(alias != null) {
