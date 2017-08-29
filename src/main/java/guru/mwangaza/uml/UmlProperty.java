@@ -17,7 +17,7 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 	private CardinalityRange cardinality;
 	private List<UmlClass> types;
 	private String typeId;
-	private UmlClass source;
+	private UmlComponent source;
 	private List<UmlProperty> mappings;
 	private Map<String,String> aliases;
 	private Map<String, CardinalityRange> cardinalityConstraints;
@@ -91,11 +91,11 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 		this.typeId = typeId;
 	}
 	
-	public UmlClass getSource() {
+	public UmlComponent getSource() {
 		return source;
 	}
 
-	public void setSource(UmlClass source) {
+	public void setSource(UmlComponent source) {
 		this.source = source;
 	}
 	
@@ -275,8 +275,8 @@ public class UmlProperty extends UmlComponent implements Cloneable {
 			builder.append("UNKNOWN_SOURCE");
 		}
 		builder.append(".").append(getName());
-		if(cardinality != null) {
-			builder.append("(").append(cardinality.getLow()).append(",").append(cardinality.getHigh()).append(")");
+		if(cardinality != null && (cardinality.getLow() != null || cardinality.getHigh() != null)) {
+			builder.append("[").append(cardinality.getLow()).append("..").append(cardinality.getHigh()).append("]");
 		}
 		return builder.toString();
 	}

@@ -3,7 +3,9 @@ package guru.mwangaza.eap.xmi.reader
 import guru.mwangaza.uml.TaggedValue
 import guru.mwangaza.uml.UmlModel
 import guru.mwangaza.uml.UmlProfileDefinition
+import guru.mwangaza.uml.UmlProperty
 import guru.mwangaza.uml.UmlStereotype
+import guru.mwangaza.uml.UmlStereotypeDefinition
 
 /**
  * Copyright 2017 Cognitive Medical Systems, Inc (http://www.cognitivemedicine.com).
@@ -36,14 +38,12 @@ class MagicDrawProfileReader extends BaseProfileReader {
     }
 
     public UmlProfileDefinition readProfile(Node umlProfileNode, UmlModel model) {
-        UmlProfileDefinition umlProfile = new UmlProfileDefinition(umlProfileNode.'@name', uri)
+        UmlProfileDefinition umlProfile = new UmlProfileDefinition(umlProfileNode.'@name')
         umlProfile.setId(umlProfileNode.attribute(xmi.id))
         umlProfileNode.packagedElement.each { it ->
             String type = it.attribute(xsi.type)
             if(type != null && type.equalsIgnoreCase("uml:Stereotype")) {
-                UmlStereotype stereotype = processStereotype(it, umlProfile)
-                umlProfile.addStereotype(stereotype);
-
+                processStereotype(it, umlProfile)
             } else {
                 println 'Skipping node of type ' + type;
             }
@@ -53,18 +53,22 @@ class MagicDrawProfileReader extends BaseProfileReader {
     }
 
     public void processStereotype(Node umlStereotypeNode, UmlProfileDefinition umlProfile) {
-        UmlStereotype stereotype = new UmlStereotype()
+        UmlStereotypeDefinition stereotype = new UmlStereotypeDefinition()
         stereotype.setName(umlStereotypeNode.'@name')
         umlStereotypeNode.ownedAttribute.each {it ->
             String name = it.'@name'
-            TaggedValue value = new TaggedValue(name)
-            stereotype.addTaggedValue(value)
+            UmlProperty property = new UmlProperty(name)
+            stereotype.addProperty(property)
+            property.setSource(stereotype);
         }
-        umlProfile.addStereotype(stereotype)
+        umlProfile.addStereotypeDefinition(stereotype)
     }
 
     def processUmlProfile(Node umlProfileNode, UmlModel model) {
         def umlProfile = readProfile(umlProfileNode, model)
+        if(umlProfile.getName().equals("ReferenceModelProfile")) {
+            print "STOP HERE"
+        }
         model.addProfile(umlProfile)
     }
 }

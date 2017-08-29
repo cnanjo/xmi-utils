@@ -14,6 +14,11 @@ public class UmlStereotypeDefinition extends UmlComponent implements Identifiabl
         propertyMap = new HashMap<>();
     }
 
+    public UmlStereotypeDefinition(String name) {
+        this();
+        setName(name);
+    }
+
     public Map<String, UmlProperty> getProperties() {
         return propertyMap;
     }

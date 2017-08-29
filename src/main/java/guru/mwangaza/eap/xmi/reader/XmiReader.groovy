@@ -1,5 +1,6 @@
 package guru.mwangaza.eap.xmi.reader
 
+import groovy.xml.QName
 import guru.mwangaza.uml.TaggedValue
 import guru.mwangaza.uml.UmlClass
 import guru.mwangaza.uml.UmlComponent
@@ -67,22 +68,14 @@ class XmiReader extends BaseXmiReader {
 		packageReader.processPackagedElements(modelNodes[0].children(), model, model)
 
 		def profileNodes = node.depthFirst().findAll { it ->
-			it.name() == 'packagedElement' && it.attribute(xmi.type) == 'uml:Profile'
+			XmiReaderUtils.getLocalName(it.name()) == 'Profile'
 		}
 
 		profileNodes.each { it ->
-			ProfileReader reader = new ProfileReader(getContext())
+			MagicDrawProfileReader reader = new MagicDrawProfileReader(getContext())
 			reader.processUmlProfile(it, model);
 		}
 
-		//Handle finding profiles through extensions
-		if(profileReader != null) {
-			List<Node> umlProfiles = new ArrayList<>();
-			XmiReaderUtils.findNodes(node, umlProfiles, "Profile")
-			umlProfiles.each { profileNode ->
-				profileReader.processUmlProfile(profileNode, model);
-			}
-		}
 		model.populateTypes()
 		model.handleParameterReferences();
 		//List<UmlStereotype> stereotypes = processAMLReferenceModelStereotype(node.getAt(rm.ReferenceModel), model)
@@ -183,40 +176,61 @@ class XmiReader extends BaseXmiReader {
 
 	//Experimental
 	def processProfileDefinition(def rootXmlNode, UmlModel model) {
-		List<Node> foundStereotypeNodes = new ArrayList<>()
-		model.getProfileDefinitionMap().each { profileName, umlProfileDefinition ->
-			umlProfileDefinition.getStereotypes().each {
-				umlStereotypeDefinition ->
-					if(umlStereotypeDefinition != null) {
-						XmiReaderUtils.findNodes(rootXmlNode, foundStereotypeNodes, umlStereotypeDefinition.getName())
-						foundStereotypeNodes.each { foundStereotypeNode ->
-							UmlComponent umlComponent = null;
-							UmlStereotype stereotype = new UmlStereotype()
-							stereotype.setName(umlStereotypeDefinition.getName())
-							Collection<TaggedValue> tags = umlStereotypeDefinition.getTaggedValues().values()
-							tags.each { tag ->
-								def tagValue = foundStereotypeNode.attribute(tag.getKey())
-								if (tag != null && tag.getKey().equalsIgnoreCase("base_Element") || tag.getKey().equalsIgnoreCase("base_Package")) {
-									umlComponent = model.getObjectById(tagValue);
+		model.getProfileDefinitionMap().each { profileName, umlProfileDefinitions ->
+			umlProfileDefinitions.each { umlProfileDefinition ->
+				if (umlProfileDefinition.getName().equals("ReferenceModelProfile")) {
+					print "HERE"
+				}
+				umlProfileDefinition.getStereotypeDefinitions().each {
+					umlStereotypeDefinition ->
+						if (umlStereotypeDefinition != null) {
+							List<Node> foundStereotypeNodes = new ArrayList<>()
+							XmiReaderUtils.findNodes(rootXmlNode, foundStereotypeNodes, umlStereotypeDefinition.getName())
+							foundStereotypeNodes.each { foundStereotypeNode ->
+								UmlComponent umlComponent = null;
+								UmlStereotype stereotype = new UmlStereotype()
+								stereotype.setName(umlStereotypeDefinition.getName())
+								Collection<UmlProperty> tags = umlStereotypeDefinition.getProperties().values()
+								tags.each { tag ->
+									def tagValue = foundStereotypeNode.attribute(tag.getName())
+									if (tag != null && tag.getName().equalsIgnoreCase("base_Element") ||
+											tag.getName().equalsIgnoreCase("base_Package") ||
+											tag.getName().equalsIgnoreCase("base_Property") ||
+											tag.getName().equalsIgnoreCase("base_Abstraction")) {
+										umlComponent = model.getObjectById(tagValue);
+									}
+									if (tagValue == null) {
+										String tagAsElementName = tag.getName().replaceAll('-', '_')
+										def nodeList = foundStereotypeNode."${tagAsElementName}"
+										if (nodeList.size() == 1) {
+											tagValue = foundStereotypeNode.text()
+										} else if (nodeList.size() > 1) {
+											print "More than one tag value element with that name"
+										}
+									}
+									stereotype.addTaggedValue(new TaggedValue(tag.getName(), tagValue))
 								}
-								if (tagValue == null) {
-									String tagAsElementName = tag.getKey().replaceAll('-', '_')
-									def nodeList = foundStereotypeNode."${tagAsElementName}"
-									if (nodeList.size() == 1) {
-										tagValue = foundStereotypeNode.text()
-									} else if (nodeList.size() > 1) {
-										print "More than one tag value element with that name"
+								if (umlComponent != null) {//TODO Think this through
+									List<UmlStereotype> stereotypeList = umlComponent.getStereotypes().get(stereotype.getName());
+									if(stereotypeList == null || stereotypeList.size() == 0) {
+										umlComponent.addStereotype(stereotype);
+									} else {
+										Boolean found = false;
+										for(int index = 0; index < stereotypeList.size(); index++) {
+											UmlStereotype existingStereotypeWithSameName = stereotypeList.get(index)
+											if (stereotype.equals(existingStereotypeWithSameName)) {
+												found = true;
+												break;
+											}
+										}
+										umlComponent.addStereotype(stereotype)
+
 									}
 								}
-								stereotype.addTaggedValue(new TaggedValue(tag.getKey(), tagValue))
-							}
-							if (umlComponent != null) {
-								umlComponent.setStereotype(stereotype)
 							}
 						}
-					}
+				}
 			}
-
 		}
 	}
 

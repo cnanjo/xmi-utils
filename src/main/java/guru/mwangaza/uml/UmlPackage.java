@@ -14,11 +14,9 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 	
 	private List<UmlPackage> packages = new ArrayList<UmlPackage>();
 	private List<UmlClass> classes = new ArrayList<UmlClass>();
-	private List<UmlStereotype> stereotypes;
 
 	public UmlPackage(String name) {
 		setName(name);
-		stereotypes = new ArrayList<>();
 	}
 	
 	public void addPackage(UmlPackage umlPackage) {
@@ -35,18 +33,6 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 	
 	public List<UmlClass> getClasses() {
 		return classes;
-	}
-
-	public List<UmlStereotype> getStereotypes() {
-		return stereotypes;
-	}
-
-	public void setStereotypes(List<UmlStereotype> stereotypes) {
-		this.stereotypes = stereotypes;
-	}
-
-	public void addStereotype(UmlStereotype stereotype) {
-		this.stereotypes.add(stereotype);
 	}
 
 	public void initializePackage(UmlModel model) {

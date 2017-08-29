@@ -16,7 +16,7 @@ public class UmlModel extends UmlComponent implements Identifiable {
 	private Map<String, Identifiable> idToObjectMap;
 	private Map<String, Identifiable> nameToObjectMap;
 	private Map<String, UmlModel> dependencies;
-	private Map<String, UmlProfileDefinition> profileDefinitionMap;
+	private Map<String, List<UmlProfileDefinition>> profileDefinitionMap;
 
 	public UmlModel() {
 		packages = new ArrayList<UmlPackage>();
@@ -55,16 +55,21 @@ public class UmlModel extends UmlComponent implements Identifiable {
 		return packages;
 	}
 
-	public Map<String, UmlProfileDefinition> getProfileDefinitionMap() {
+	public Map<String, List<UmlProfileDefinition>> getProfileDefinitionMap() {
 		return profileDefinitionMap;
 	}
 
-	public void setProfileDefinitionMap(Map<String, UmlProfileDefinition> profileDefinitionMap) {
+	public void setProfileDefinitionMap(Map<String, List<UmlProfileDefinition>> profileDefinitionMap) {
 		this.profileDefinitionMap = profileDefinitionMap;
 	}
 
 	public void addProfile(UmlProfileDefinition profileDefinition) {
-		this.profileDefinitionMap.put(profileDefinition.getName(), profileDefinition);
+		List<UmlProfileDefinition> profiles = this.profileDefinitionMap.get(profileDefinition.getName());
+		if(profiles == null) {
+			profiles = new ArrayList<UmlProfileDefinition>();
+			this.profileDefinitionMap.put(profileDefinition.getName(), profiles);
+		}
+		profiles.add(profileDefinition);
 	}
 
 	public String toString() {

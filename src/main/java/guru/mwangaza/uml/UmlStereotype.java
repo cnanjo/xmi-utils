@@ -37,4 +37,21 @@ public class UmlStereotype extends UmlComponent implements Identifiable, Cloneab
     }
 
     public TaggedValue getTaggedValue(String key) {return this.taggedValues.get(key);}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UmlStereotype that = (UmlStereotype) o;
+
+        return taggedValues != null ? taggedValues.equals(that.taggedValues) : that.taggedValues == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = basePackageId != null ? basePackageId.hashCode() : 0;
+        result = 31 * result + (taggedValues != null ? taggedValues.hashCode() : 0);
+        return result;
+    }
 }

@@ -43,7 +43,6 @@ class ProfileReaderTest {
 
     @Test
     void testLoadProfile() {
-        UmlProfileDefinition profile = model.getProfileDefinitionMap().get("TestProfile1")
-        assertNotNull profile
+        assertEquals(2, model.getProfileDefinitionMap().get("TestProfile1").size())
     }
 }

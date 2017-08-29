@@ -40,7 +40,7 @@ class ProfileReader extends BaseProfileReader {
         UmlProfileDefinition umlProfile = new UmlProfileDefinition(umlProfileNode.'@name')
         umlProfile.setId(umlProfileNode.attribute(xmi.id))
         umlProfileNode.packagedElement.each { it ->
-            String type = it.attribute(xmi.type)
+            String type = it.attribute(xsi.type)
             if(type != null && type.equalsIgnoreCase("uml:Stereotype")) {
                 UmlStereotype stereotype = processStereotype(it, umlProfile, model)
                 umlProfile.addStereotype(stereotype);

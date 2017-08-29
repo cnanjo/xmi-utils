@@ -14,7 +14,7 @@ public abstract class UmlComponent implements Taggable, Identifiable {
 	private List<TaggedValue> tags = new ArrayList<TaggedValue>();
 	private Map<String, TaggedValue> indexedLabels = new HashMap<String, TaggedValue>();
 	private String documentation;
-	private UmlStereotype stereotype;
+	private Map<String, List<UmlStereotype>> stereotypes = new HashMap<>();
 	
 	public String getName() {
 		return name;
@@ -117,12 +117,21 @@ public abstract class UmlComponent implements Taggable, Identifiable {
 		}
 	}
 
-	public UmlStereotype getStereotype() {
-		return stereotype;
+	public Map<String, List<UmlStereotype>> getStereotypes() {
+		return stereotypes;
 	}
 
-	public void setStereotype(UmlStereotype stereotype) {
-		this.stereotype = stereotype;
+	public void setStereotype(Map<String, List<UmlStereotype>> stereotypes) {
+		this.stereotypes = stereotypes;
+	}
+
+	public void addStereotype(UmlStereotype stereotype) {
+		List<UmlStereotype> stereotypes = this.stereotypes.get(stereotype.getName());
+		if(stereotypes == null) {
+			stereotypes = new ArrayList<>();
+			this.stereotypes.put(stereotype.getName(), stereotypes);
+		}
+		stereotypes. add(stereotype);
 	}
 	
 	/**

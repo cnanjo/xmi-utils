@@ -52,13 +52,13 @@ class ClassReaderTest {
 	@Test
 	public void testClassTaggedValues() {
 		UmlClass child = model.getObjectByName("ChildType1")
-		UmlStereotype stereotype = child.getStereotype()
+		UmlStereotype stereotype = child.getStereotypes().get("Stereotype1").get(0)
 		Map<String, TaggedValue> tags = stereotype.getTaggedValues()
 		assertNotNull(child)
 		assertNotNull(stereotype)
 		assertEquals("Stereotype1", stereotype.getName())
 		assertEquals(2, tags.size())
-		assertNotNull("test-tag-1", child.getStereotype().getTaggedValue("test-tag-1").getKey())
-		assertEquals("Value 1", child.getStereotype().getTaggedValue("test-tag-1").getValue())
+		assertNotNull("test-tag-1", stereotype.getTaggedValue("test-tag-1").getKey())
+		assertEquals("Value 1", stereotype.getTaggedValue("test-tag-1").getValue())
 	}
 }
