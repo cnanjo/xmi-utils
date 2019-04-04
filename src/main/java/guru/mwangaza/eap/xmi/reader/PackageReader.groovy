@@ -33,6 +33,7 @@ class PackageReader {
 	def uml
 	def xmi
 	def classReader
+	def interfaceReader
 	def datatypeReader
 	def documentationReader
 
@@ -40,6 +41,8 @@ class PackageReader {
 		this.uml = context.getNamespace("uml");
 		this.xmi = context.getNamespace("xmi");
 		classReader = new ClassReader(context)
+		interfaceReader = new InterfaceReader(context)
+
 		datatypeReader = new DatatypeReader(context)
 		documentationReader = new DocumentationReader(context)
 	}
@@ -65,6 +68,8 @@ class PackageReader {
 				processPackagedElements(packagedElement.children(), parsedItem, model)
 			} else if(packagedElement.attribute(xmi.type) == 'uml:Class') {
 				classReader.processUmlClass(packagedElement, parent, model)
+			} else if(packagedElement.attribute(xmi.type) == 'uml:Interface') {
+				interfaceReader.processUmlInterface(packagedElement, parent, model)
 			} else if(packagedElement.attribute(xmi.type) == 'uml:DataType') {
 				datatypeReader.processUmlDatatype(packagedElement, parent, model)
 			} else {

@@ -18,6 +18,7 @@
 package guru.mwangaza.eap.xmi.reader
 
 import groovy.xml.Namespace
+import guru.mwangaza.uml.BaseClassifier
 import guru.mwangaza.uml.UmlClass
 import guru.mwangaza.uml.UmlModel
 import guru.mwangaza.uml.UmlProperty
@@ -86,7 +87,7 @@ class PropertyReader {
 		return property
 	}
 	
-	def processOwnedAttribute(Node ownedAttribute, UmlClass parent, UmlModel model) {
+	def processOwnedAttribute(Node ownedAttribute, BaseClassifier parent, UmlModel model) {
 		UmlProperty parsedItem = null
 		if(ownedAttribute.attribute(xmi.type) == 'uml:Property') {
 			parsedItem = readProperty(ownedAttribute, model)

@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class UmlTemplateSignature extends UmlComponent implements Identifiable, Cloneable {
     private List<UmlTemplateParameter> parameters;
-    private UmlClass owningClass;
+    private BaseClassifier owningClass;
     private Map<String, UmlTemplateParameter> idToParameterMap;
 
     public UmlTemplateSignature() {
@@ -44,11 +44,11 @@ public class UmlTemplateSignature extends UmlComponent implements Identifiable, 
         this.parameters = parameters;
     }
 
-    public UmlClass getOwningClass() {
+    public BaseClassifier getOwningClass() {
         return owningClass;
     }
 
-    public void setOwningClass(UmlClass owningClass) {
+    public void setOwningClass(BaseClassifier owningClass) {
         this.owningClass = owningClass;
     }
 
@@ -66,7 +66,7 @@ public class UmlTemplateSignature extends UmlComponent implements Identifiable, 
         }
     }
 
-    public void populateTemplateSignature(UmlClass parent, UmlModel model) {
+    public void populateTemplateSignature(BaseClassifier parent, UmlModel model) {
         populateTemplateParameters(model);
         setOwningClass(parent);
     }

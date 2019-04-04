@@ -31,6 +31,7 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 	
 	private List<UmlPackage> packages = new ArrayList<UmlPackage>();
 	private List<UmlClass> classes = new ArrayList<UmlClass>();
+	private List<UmlInterface> interfaces = new ArrayList<UmlInterface>();
 
 	public UmlPackage(String name) {
 		setName(name);
@@ -47,15 +48,28 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 	public void addClass(UmlClass umlClass) {
 		classes.add(umlClass);
 	}
+
+	public void addInterface(UmlInterface umlInterface) {
+		interfaces.add(umlInterface);
+	}
 	
 	public List<UmlClass> getClasses() {
 		return classes;
+	}
+
+	public List<UmlInterface> getInterfaces() {
+		return interfaces;
 	}
 
 	public void initializePackage(UmlModel model) {
 		for(UmlClass umlClass : getClasses()) {
 			umlClass.findClassForId(model);
 		}
+
+		for(UmlInterface umlInterface : getInterfaces()) {
+			umlInterface.findInterfaceForId(model);
+		}
+
 		for(UmlPackage umlPackage : packages) {
 			umlPackage.initializePackage(model);
 		}
