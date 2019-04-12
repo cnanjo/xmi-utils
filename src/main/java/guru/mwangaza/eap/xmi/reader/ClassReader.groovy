@@ -76,6 +76,7 @@ class ClassReader {
 	def processUmlClass(Node classNode, def parent, UmlModel model) {
 		def umlClass = readClass(classNode, model)
 		parent.addClass(umlClass)
+		umlClass.setParentPackage(parent)//TODO Add test
 	}
 
 }

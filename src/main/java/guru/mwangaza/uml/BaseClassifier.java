@@ -12,6 +12,7 @@ public class BaseClassifier extends UmlComponent implements Identifiable, Clonea
     private UmlTemplateSignature templateSignature;
     private UmlTemplateBinding templateBinding;
     private UmlModel model;
+    private UmlPackage parentPackage;
     private boolean isPrimitive = false;
     private boolean isAbstract = false;
     private boolean isBinding = false;
@@ -119,4 +120,11 @@ public class BaseClassifier extends UmlComponent implements Identifiable, Clonea
         isBinding = binding;
     }
 
+    public UmlPackage getParentPackage() {
+        return parentPackage;
+    }
+
+    public void setParentPackage(UmlPackage parentPackage) {
+        this.parentPackage = parentPackage;
+    }
 }

@@ -29,6 +29,8 @@ import java.util.List;
  *
  */
 public class UmlClass extends BaseClassifier {
+
+	private boolean isUmlPrimitive = false;
 	
 	public UmlClass() {
 		super();
@@ -37,6 +39,14 @@ public class UmlClass extends BaseClassifier {
 	public UmlClass(String name) {
 		this();
 		setName(name);
+	}
+
+	public boolean isUmlPrimitive() {
+		return isUmlPrimitive;
+	}
+
+	public void setUmlPrimitive(boolean umlPrimitive) {
+		isUmlPrimitive = umlPrimitive;
 	}
 
 	public String toString() {

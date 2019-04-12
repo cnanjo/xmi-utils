@@ -17,7 +17,7 @@
  */
 package guru.mwangaza.eap.xmi.reader
 
-
+import guru.mwangaza.uml.UmlClass
 import guru.mwangaza.uml.UmlInterface
 import guru.mwangaza.uml.UmlModel
 
@@ -69,12 +69,15 @@ class InterfaceReader {
 
 		}
 
+		umlInterface.getProperties().each{ prop -> if(prop.getFirstType() instanceof UmlClass){throw new RuntimeException("ERROR HERE " + umlInterface.getName())}}
+
 		return umlInterface
 	}
 	
 	def processUmlInterface(Node interfaceNode, def parent, UmlModel model) {
 		def umlInterface = readInterface(interfaceNode, model)
 		parent.addInterface(umlInterface)
+		umlInterface.setParentPackage(parent);
 	}
 
 }
