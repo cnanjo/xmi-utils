@@ -140,6 +140,7 @@ class XmiReader extends BaseXmiReader {
 	def handleUmlPrimitiveTypes(UmlModel model) {
 		UmlClass umlString = new UmlClass("String")
 		umlString.setId("http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi#String")
+		umlString.setUmlPrimitive(true);
 		model.putObject(umlString.getId(), umlString)
 	}
 
