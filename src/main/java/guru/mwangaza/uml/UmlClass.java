@@ -31,6 +31,9 @@ import java.util.List;
 public class UmlClass extends BaseClassifier {
 
 	private boolean isUmlPrimitive = false;
+
+	private List<UmlInterface> realizations = new ArrayList<>();
+	private List<String> realizationIds = new ArrayList<>();
 	
 	public UmlClass() {
 		super();
@@ -41,12 +44,45 @@ public class UmlClass extends BaseClassifier {
 		setName(name);
 	}
 
+	public UmlClass(String name, boolean isUmlPrimitive) {
+		this();
+		setName(name);
+		setUmlPrimitive(isUmlPrimitive);
+		if(isUmlPrimitive) {
+			setPrimitive(true);
+		}
+	}
+
 	public boolean isUmlPrimitive() {
 		return isUmlPrimitive;
 	}
 
 	public void setUmlPrimitive(boolean umlPrimitive) {
 		isUmlPrimitive = umlPrimitive;
+	}
+
+	public List<UmlInterface> getRealizations() {
+		return realizations;
+	}
+
+	public void setRealizations(List<UmlInterface> realizations) {
+		this.realizations = realizations;
+	}
+
+	public void addRealization(UmlInterface umlInterface) {
+		this.realizations.add(umlInterface);
+	}
+
+	public List<String> getRealizationIds() {
+		return realizationIds;
+	}
+
+	public void setRealizationIds(List<String> realizationIds) {
+		this.realizationIds = realizationIds;
+	}
+
+	public void addRealizationId(String realizationId) {
+		this.realizationIds.add(realizationId);
 	}
 
 	public String toString() {
@@ -90,6 +126,19 @@ public class UmlClass extends BaseClassifier {
 				throw new RuntimeException("Class not found for ID: " + id + " and class name " + getName());
 			}
 		}
+
+		for(String id: getRealizationIds()) {
+			if(id == null) {
+				System.out.println("Class has null interface ID: " + getName());
+				continue;
+			}
+			UmlInterface umlInterface = (UmlInterface)model.getObjectById(id);
+			if(umlInterface != null) {
+				getRealizations().add(umlInterface);
+			} else {
+				throw new RuntimeException("Interface not found for ID: " + id + " and class name " + getName());
+			}
+		}
 		
 		for(UmlProperty property : getProperties()) {
 			property.findTypeClassForTypeId(model);
@@ -107,13 +156,8 @@ public class UmlClass extends BaseClassifier {
 	
 	public UmlClass clone() {
 		UmlClass clone = (UmlClass)super.clone();
-		clone.setDescription(getDescription());
-		clone.setGeneralizations(new ArrayList<BaseClassifier>());
-		clone.getGeneralizations().addAll(getGeneralizations());
-		clone.setGeneralizationIds(new ArrayList<String>());
-		clone.getGeneralizationIds().addAll(this.getGeneralizationIds());
-		clone.setProperties(new ArrayList<UmlProperty>());
-		clone.getProperties().addAll(this.getProperties());
+		cloneClassifier(clone);
+		clone.setUmlPrimitive(this.isUmlPrimitive());
 		return clone;
 	}
 }

@@ -1,6 +1,7 @@
 package guru.mwangaza.uml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class BaseClassifier extends UmlComponent implements Identifiable, Cloneable {
@@ -126,5 +127,31 @@ public class BaseClassifier extends UmlComponent implements Identifiable, Clonea
 
     public void setParentPackage(UmlPackage parentPackage) {
         this.parentPackage = parentPackage;
+    }
+
+    /**
+     *  Clones classifier.
+     *
+     * @return
+     */
+    public void cloneClassifier(BaseClassifier clone) {
+
+        clone.setModel(this.getModel());
+        clone.setAbstract(this.isAbstract());
+        clone.setBinding(this.isBinding());
+        clone.setDescription(getDescription());
+        clone.setGeneralizations(new ArrayList<BaseClassifier>());
+        clone.getGeneralizations().addAll(getGeneralizations());
+        clone.setGeneralizationIds(new ArrayList<String>());
+        clone.getGeneralizationIds().addAll(this.getGeneralizationIds());
+        clone.setProperties(new ArrayList<UmlProperty>());
+        clone.getProperties().addAll(this.getProperties());
+        clone.setParentPackage(this.getParentPackage());
+        clone.setPrimitive(this.isPrimitive());
+        clone.setTemplateBinding(this.getTemplateBinding());
+        clone.setTemplateSignature(this.getTemplateSignature());
+        clone.setDocumentation(this.getDocumentation());
+        clone.setStereotype(new HashMap<String, List<UmlStereotype>>());
+        clone.getStereotypes().putAll(this.getStereotypes());
     }
 }

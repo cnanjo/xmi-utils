@@ -32,6 +32,7 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 	private List<UmlPackage> packages = new ArrayList<UmlPackage>();
 	private List<UmlClass> classes = new ArrayList<UmlClass>();
 	private List<UmlInterface> interfaces = new ArrayList<UmlInterface>();
+	private UmlPackage parentPackage;
 
 	public UmlPackage(String name) {
 		setName(name);
@@ -39,6 +40,7 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 	
 	public void addPackage(UmlPackage umlPackage) {
 		packages.add(umlPackage);
+		umlPackage.setParentPackage(this);
 	}
 	
 	public List<UmlPackage> getPackages() {
@@ -59,6 +61,14 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 
 	public List<UmlInterface> getInterfaces() {
 		return interfaces;
+	}
+
+	public UmlPackage getParentPackage() {
+		return parentPackage;
+	}
+
+	public void setParentPackage(UmlPackage parentPackage) {
+		this.parentPackage = parentPackage;
 	}
 
 	public void initializePackage(UmlModel model) {

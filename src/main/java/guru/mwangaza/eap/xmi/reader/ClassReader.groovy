@@ -67,7 +67,12 @@ class ClassReader {
 
 		classNode.templateBinding.each { it ->
 			templateBindingReader.processTemplateBinding(it, umlClass, model)
+		}
 
+		classNode.interfaceRealization.each { realization ->
+			realization.supplier.each {supplier ->
+				umlClass.addRealizationId(supplier.attribute(xmi.idref))
+			}
 		}
 
 		return umlClass

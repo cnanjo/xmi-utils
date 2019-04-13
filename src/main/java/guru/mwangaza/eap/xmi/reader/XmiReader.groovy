@@ -138,10 +138,36 @@ class XmiReader extends BaseXmiReader {
 	}
 
 	def handleUmlPrimitiveTypes(UmlModel model) {
+
 		UmlClass umlString = new UmlClass("String")
+
 		umlString.setId("http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi#String")
 		umlString.setUmlPrimitive(true);
 		model.putObject(umlString.getId(), umlString)
+
+//		UmlClass umlBoolean = new UmlClass("Boolean")
+//
+//		umlBoolean.setId("http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi#Boolean")
+//		umlBoolean.setUmlPrimitive(true);
+//		model.putObject(umlBoolean.getId(), umlBoolean)
+//
+//		UmlClass umlDouble = new UmlClass("Double")
+//
+//		umlDouble.setId("http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi#Double")
+//		umlDouble.setUmlPrimitive(true);
+//		model.putObject(umlDouble.getId(), umlDouble)
+//
+//		UmlClass umlFloat = new UmlClass("Float")
+//
+//		umlFloat.setId("http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi#Double")
+//		umlFloat.setUmlPrimitive(true);
+//		model.putObject(umlFloat.getId(), umlFloat)
+//
+//		UmlClass umlDate = new UmlClass("Date")
+//
+//		umlDate.setId("http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi#Date")
+//		umlDate.setUmlPrimitive(true);
+//		model.putObject(umlDate.getId(), umlDate)
 	}
 
 	def processXmiElementExtensions(Node node, UmlModel model) {
@@ -196,9 +222,6 @@ class XmiReader extends BaseXmiReader {
 	def processProfileDefinition(def rootXmlNode, UmlModel model) {
 		model.getProfileDefinitionMap().each { profileName, umlProfileDefinitions ->
 			umlProfileDefinitions.each { umlProfileDefinition ->
-				if (umlProfileDefinition.getName().equals("ReferenceModelProfile")) {
-					print "HERE"
-				}
 				umlProfileDefinition.getStereotypeDefinitions().each {
 					umlStereotypeDefinition ->
 						if (umlStereotypeDefinition != null) {
