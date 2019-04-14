@@ -18,7 +18,8 @@ public class BaseClassifier extends UmlComponent implements Identifiable, Clonea
     private boolean isAbstract = false;
     private boolean isBinding = false;
 
-    public BaseClassifier() {}
+    public BaseClassifier() {
+    }
 
     public BaseClassifier(String name) {
         this();
@@ -130,20 +131,16 @@ public class BaseClassifier extends UmlComponent implements Identifiable, Clonea
     }
 
     /**
-     *  Clones classifier.
+     * Clones classifier.
      *
      * @return
      */
-    public void cloneClassifier(BaseClassifier clone) {
+    protected void cloneClassifier(BaseClassifier clone) {
 
         clone.setModel(this.getModel());
         clone.setAbstract(this.isAbstract());
         clone.setBinding(this.isBinding());
         clone.setDescription(getDescription());
-        clone.setGeneralizations(new ArrayList<BaseClassifier>());
-        clone.getGeneralizations().addAll(getGeneralizations());
-        clone.setGeneralizationIds(new ArrayList<String>());
-        clone.getGeneralizationIds().addAll(this.getGeneralizationIds());
         clone.setProperties(new ArrayList<UmlProperty>());
         clone.getProperties().addAll(this.getProperties());
         clone.setParentPackage(this.getParentPackage());
@@ -153,5 +150,9 @@ public class BaseClassifier extends UmlComponent implements Identifiable, Clonea
         clone.setDocumentation(this.getDocumentation());
         clone.setStereotype(new HashMap<String, List<UmlStereotype>>());
         clone.getStereotypes().putAll(this.getStereotypes());
+        clone.setGeneralizations(new ArrayList<BaseClassifier>());
+        clone.getGeneralizations().addAll(getGeneralizations());
+        clone.setGeneralizationIds(new ArrayList<String>());
+        clone.getGeneralizationIds().addAll(this.getGeneralizationIds());
     }
 }
