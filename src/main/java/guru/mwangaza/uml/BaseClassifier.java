@@ -10,6 +10,7 @@ public class BaseClassifier extends UmlComponent implements Identifiable, Clonea
     private List<BaseClassifier> generalizations = new ArrayList<BaseClassifier>();
     private List<String> generalizationIds = new ArrayList<String>();
     private List<UmlProperty> properties = new ArrayList<UmlProperty>();
+    private List<UmlOperation> operations = new ArrayList<>();
     private UmlTemplateSignature templateSignature;
     private UmlTemplateBinding templateBinding;
     private UmlModel model;
@@ -48,6 +49,18 @@ public class BaseClassifier extends UmlComponent implements Identifiable, Clonea
 
     public void addGeneralization(UmlClass generalization) {
         generalizations.add(generalization);
+    }
+
+    public boolean hasGeneralizations() {
+        return generalizations != null && generalizations.size() > 0;
+    }
+
+    public BaseClassifier getFirstGeneralization() {
+        if(hasGeneralizations()) {
+            return generalizations.get(0);
+        } else {
+            return null;
+        }
     }
 
     public List<String> getGeneralizationIds() {
@@ -95,7 +108,7 @@ public class BaseClassifier extends UmlComponent implements Identifiable, Clonea
     }
 
     public boolean isGenericType() {
-        return templateSignature != null;
+        return templateSignature != null || templateBinding != null;
     }
 
     public UmlTemplateSignature getTemplateSignature() {
@@ -128,6 +141,18 @@ public class BaseClassifier extends UmlComponent implements Identifiable, Clonea
 
     public void setParentPackage(UmlPackage parentPackage) {
         this.parentPackage = parentPackage;
+    }
+
+    public List<UmlOperation> getOperations() {
+        return operations;
+    }
+
+    public void setOperations(List<UmlOperation> operations) {
+        this.operations = operations;
+    }
+
+    public void addOperation(UmlOperation operation) {
+        this.operations.add(operation);
     }
 
     /**

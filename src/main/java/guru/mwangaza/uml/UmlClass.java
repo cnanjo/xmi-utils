@@ -152,6 +152,18 @@ public class UmlClass extends BaseClassifier {
 			this.getTemplateBinding().populateTemplateBinding(model);
 		}
 
+		if(this.getOperations() != null) {
+			for(UmlOperation operation : this.getOperations()) {
+				if(operation.getParameters() != null) {
+					for(UmlParameter parameter : operation.getParameters()) {
+						if(parameter.getTypeId() != null) {
+							parameter.setType((BaseClassifier)model.getObjectById(parameter.getTypeId()));
+						}
+					}
+				}
+			}
+		}
+
 	}
 	
 	public UmlClass clone() {

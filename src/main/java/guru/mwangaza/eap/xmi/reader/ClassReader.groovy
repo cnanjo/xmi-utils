@@ -20,6 +20,9 @@ package guru.mwangaza.eap.xmi.reader
 import groovy.xml.Namespace
 import guru.mwangaza.uml.UmlClass
 import guru.mwangaza.uml.UmlModel
+import guru.mwangaza.uml.UmlOperation
+import guru.mwangaza.uml.UmlParameter
+import guru.mwangaza.uml.UmlVisibilityEnum
 
 
 /**
@@ -52,6 +55,24 @@ class ClassReader {
 		model.putObject(umlClass.getId(), umlClass)
 		umlClass.setModel(model);
 		classNode.ownedAttribute.each { it -> propertyReader.processOwnedAttribute(it, umlClass, model) }
+		classNode.ownedOperation.each { operation ->
+			UmlOperation umlOperation = new UmlOperation();
+			umlOperation.setName(operation.'@name');
+			umlOperation.setVisibility(UmlVisibilityEnum.getVisibility(operation.'@visibility'));
+			if(operation.'@isStatic' != null) {
+				umlOperation.setStatic(Boolean.valueOf(operation.'@isStatic'));
+			}
+			if(operation.'@isAbstract' != null) {
+				umlOperation.setAbstract(Boolean.valueOf(operation.'@isAbstract'));
+			}
+			operation.ownedParameter.each { opParameter ->
+				UmlParameter umlParameter = new UmlParameter(opParameter.'@name', opParameter.'@id');
+				umlParameter.setVisibility(UmlVisibilityEnum.getVisibility(opParameter.'@visibility'))
+				umlParameter.setTypeId(opParameter.'@type');
+				umlOperation.addParameter(umlParameter);
+			}
+			umlClass.addOperation(umlOperation);
+		}
 		classNode.generalization.each { generalization ->
 			if (generalization.@general != null && (generalization.@general.size() > 0 || generalization.@general.get(0) != null)) {
 				umlClass.addGeneralizationId(generalization.'@general')

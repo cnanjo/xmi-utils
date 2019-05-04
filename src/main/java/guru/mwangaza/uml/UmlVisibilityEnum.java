@@ -35,7 +35,13 @@ package guru.mwangaza.uml;
  * Created by cnanjo on 8/5/17.
  */
 
-public enum UmlVisibility {
+public enum UmlVisibilityEnum {
+    PUBLIC,
     PRIVATE,
-    PUBLIC
+    PROTECTED,
+    PACKAGE;
+
+    public static UmlVisibilityEnum getVisibility(String visibility) {
+        return UmlVisibilityEnum.valueOf(visibility.toUpperCase());
+    }
 }

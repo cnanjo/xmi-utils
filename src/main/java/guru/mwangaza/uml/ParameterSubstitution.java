@@ -25,12 +25,12 @@ public class ParameterSubstitution {
     private String Id;
     private UmlTemplateParameter formalParameter;
     private String formalParameterRefId;
-    private UmlClass actualParameter;
+    private BaseClassifier actualParameter;
     private String actualParameterRefId;
 
     public ParameterSubstitution() {}
 
-    public ParameterSubstitution(UmlTemplateParameter formal, UmlClass actual) {
+    public ParameterSubstitution(UmlTemplateParameter formal, BaseClassifier actual) {
         this.formalParameter = formal;
         this.actualParameter = actual;
     }
@@ -59,11 +59,11 @@ public class ParameterSubstitution {
         this.formalParameterRefId = formalParameterRefId;
     }
 
-    public UmlClass getActualParameter() {
+    public BaseClassifier getActualParameter() {
         return actualParameter;
     }
 
-    public void setActualParameter(UmlClass actualParameter) {
+    public void setActualParameter(BaseClassifier actualParameter) {
         this.actualParameter = actualParameter;
     }
 
