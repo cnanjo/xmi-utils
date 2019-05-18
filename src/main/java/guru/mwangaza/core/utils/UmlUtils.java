@@ -4,10 +4,7 @@ import guru.mwangaza.uml.BaseClassifier;
 import guru.mwangaza.uml.UmlPackage;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UmlUtils {
 
@@ -78,6 +75,21 @@ public class UmlUtils {
                 });
             }
         }
+    }
+
+    public static String getPackageHierarchyAsRelativeFilePath(UmlPackage leafPackage, String delimiter) {
+        StringBuilder path = new StringBuilder();
+        Stack stack = new Stack();
+        UmlPackage currentPackage = leafPackage;
+        stack.push(currentPackage.getName());
+        while(currentPackage.getParentPackage() != null) {
+            currentPackage = currentPackage.getParentPackage();
+            stack.push(currentPackage.getName());
+        }
+        while(!stack.empty()) {
+            path.append(stack.pop()).append(delimiter);
+        }
+        return path.toString();
     }
 
 }

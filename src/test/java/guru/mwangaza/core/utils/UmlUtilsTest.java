@@ -34,4 +34,13 @@ public class UmlUtilsTest {
 
     }
 
+    @Test
+    public void getPackageHierarchyAsRelativeFilePath() {
+        UmlPackage one = new UmlPackage("one");
+        UmlPackage two = new UmlPackage("two");
+        UmlPackage three = new UmlPackage("three");
+        one.addPackage(two);
+        two.addPackage(three);
+        assertEquals("one/two/three/", UmlUtils.getPackageHierarchyAsRelativeFilePath(three, "/"));
+    }
 }

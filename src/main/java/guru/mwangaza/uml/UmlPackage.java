@@ -39,8 +39,10 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 	}
 	
 	public void addPackage(UmlPackage umlPackage) {
-		packages.add(umlPackage);
-		umlPackage.setParentPackage(this);
+		if(!packages.contains(umlPackage)) {
+			packages.add(umlPackage);
+			umlPackage.setParentPackage(this);
+		}
 	}
 	
 	public List<UmlPackage> getPackages() {
