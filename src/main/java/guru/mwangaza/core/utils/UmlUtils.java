@@ -78,18 +78,18 @@ public class UmlUtils {
     }
 
     public static String getPackageHierarchyAsRelativeFilePath(UmlPackage leafPackage, String delimiter) {
-        StringBuilder path = new StringBuilder();
-        Stack stack = new Stack();
+        List<String> pathComponentList = new ArrayList<>();
+        Stack<String> stack = new Stack();
         UmlPackage currentPackage = leafPackage;
         stack.push(currentPackage.getName());
         while(currentPackage.getParentPackage() != null) {
             currentPackage = currentPackage.getParentPackage();
             stack.push(currentPackage.getName());
         }
-        while(!stack.empty()) {
-            path.append(stack.pop()).append(delimiter);
+        while(!stack.isEmpty()) {
+            pathComponentList.add(stack.pop());
         }
-        return path.toString();
+        return String.join(delimiter, pathComponentList);
     }
 
 }
