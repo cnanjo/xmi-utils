@@ -49,7 +49,9 @@ public class UmlInterface extends BaseClassifier {
             }
             UmlInterface umlInterface = (UmlInterface)model.getObjectById(id);
             if(umlInterface != null) {
-                getGeneralizations().add(umlInterface);
+                if(!getGeneralizations().contains(umlInterface)) { //Don't add if resolution has already been done.
+                    getGeneralizations().add(umlInterface);
+                }
             } else {
                 throw new RuntimeException("Interface not found for ID: " + id + " and interface name " + getName());
             }

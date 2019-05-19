@@ -31,7 +31,7 @@ public class UmlModel extends UmlComponent implements Identifiable {
 	
 	private List<UmlPackage> packages;
 	private Map<String, Identifiable> idToObjectMap;
-	private Map<String, Identifiable> nameToObjectMap;
+	private Map<String, Identifiable> nameToObjectMap;//Bad assumption. Should be a map of string to list items.
 	private Map<String, UmlModel> dependencies;
 	private Map<String, List<UmlProfileDefinition>> profileDefinitionMap;
 

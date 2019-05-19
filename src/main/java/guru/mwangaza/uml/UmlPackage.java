@@ -52,8 +52,8 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 	public UmlPackage getPackageWithName(String name) {
 		UmlPackage found = null;
 		for(int index = 0; index < packages.size(); index++) {
-			if(packages.get(0).getName().toLowerCase().equalsIgnoreCase(name.toLowerCase())) {
-				found = packages.get(0);
+			if(packages.get(index).getName().toLowerCase().equalsIgnoreCase(name.toLowerCase())) {
+				found = packages.get(index);
 				break;
 			}
 		}
