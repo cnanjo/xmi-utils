@@ -102,15 +102,15 @@ public abstract class UmlComponent implements Taggable, Identifiable {
 	}
 	
 	/**
-	 * Returns true if tag exists and its value is 'true'.
-	 * Returns false otherwise.
+	 * Returns the boolean value corresponding to the parsed tagged string value ("true", "false")
+	 * otherwise returns null;
 	 * 
 	 * @param tag
 	 * @return
 	 */
-	public boolean getTaggedValueAsBoolean(String key) {
+	public Boolean getTaggedValueAsBoolean(String key) {
 		TaggedValue tag = getTaggedValueByKey(key);
-		boolean value = false;
+		Boolean value = null;
 		if(tag != null && tag.getValue() != null) {
 			value = Boolean.parseBoolean(tag.getValue());
 		}

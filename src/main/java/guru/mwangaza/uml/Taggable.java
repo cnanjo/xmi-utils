@@ -34,7 +34,7 @@ public interface Taggable {
 	public void addTag(TaggedValue tag);
 	public void buildTaggedValueIndex();
 	public TaggedValue getTaggedValueByKey(String key);
-	public boolean getTaggedValueAsBoolean(String key);
+	public Boolean getTaggedValueAsBoolean(String key);
 	public String getTaggedValueAsString(String key);
 	public boolean hasTags();
 	public boolean hasNoTags();
