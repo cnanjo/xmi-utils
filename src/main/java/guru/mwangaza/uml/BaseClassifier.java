@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class BaseClassifier extends UmlComponent implements Identifiable, Cloneable {
+public class BaseClassifier extends UmlComponent implements Cloneable {
 
     private String description;
     private List<BaseClassifier> generalizations = new ArrayList<BaseClassifier>();

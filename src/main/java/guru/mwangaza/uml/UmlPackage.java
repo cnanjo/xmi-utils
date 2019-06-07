@@ -27,7 +27,7 @@ import java.util.List;
  * @author cnanjo
  *
  */
-public class UmlPackage extends UmlComponent implements Identifiable {
+public class UmlPackage extends UmlComponent implements Cloneable {
 	
 	private List<UmlPackage> packages = new ArrayList<UmlPackage>();
 	private List<UmlClass> classes = new ArrayList<UmlClass>();
@@ -58,6 +58,22 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 			}
 		}
 		return found;
+	}
+
+	public void setPackages(List<UmlPackage> packages) {
+		this.packages = packages;
+	}
+
+	public void setClasses(List<UmlClass> classes) {
+		this.classes = classes;
+	}
+
+	public void setInterfaces(List<UmlInterface> interfaces) {
+		this.interfaces = interfaces;
+	}
+
+	public boolean hasChildrenPackages() {
+		return packages != null && packages.size() > 0;
 	}
 	
 	public void addClass(UmlClass umlClass) {
@@ -97,6 +113,15 @@ public class UmlPackage extends UmlComponent implements Identifiable {
 		for(UmlPackage umlPackage : packages) {
 			umlPackage.initializePackage(model);
 		}
+	}
+
+	public UmlPackage clone() {
+		UmlPackage clone = (UmlPackage)super.clone();
+		clone.setParentPackage(this.getParentPackage());
+		clone.setPackages(this.getPackages());
+		clone.setInterfaces(this.getInterfaces());
+		clone.setClasses(this.getClasses());
+		return clone;
 	}
 
 	public String toString() {

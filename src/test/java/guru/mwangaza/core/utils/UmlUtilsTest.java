@@ -43,4 +43,16 @@ public class UmlUtilsTest {
         two.addPackage(three);
         assertEquals("one/two/three", UmlUtils.getPackageHierarchyAsRelativeFilePath(three, "/"));
     }
+
+    @Test
+    public void hasAncestor() {
+        UmlClass one = new UmlClass("one");
+        UmlClass two = new UmlClass("two");
+        UmlClass three = new UmlClass("three");
+        UmlClass four = new UmlClass("four");
+        one.addGeneralization(two);
+        two.addGeneralization(three);
+        three.addGeneralization(four);
+        assertTrue(UmlUtils.hasAncestors(one, "four"));
+    }
 }

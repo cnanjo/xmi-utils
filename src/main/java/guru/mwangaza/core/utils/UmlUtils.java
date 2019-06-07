@@ -1,7 +1,6 @@
 package guru.mwangaza.core.utils;
 
-import guru.mwangaza.uml.BaseClassifier;
-import guru.mwangaza.uml.UmlPackage;
+import guru.mwangaza.uml.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -90,6 +89,77 @@ public class UmlUtils {
             pathComponentList.add(stack.pop());
         }
         return String.join(delimiter, pathComponentList);
+    }
+
+    public static BaseClassifier buildClassifierFromCanonicalClassName(String canonicalClassName, boolean asInterface) {
+        if(canonicalClassName.indexOf('.') < 0) {
+            if(asInterface) {
+                return new UmlInterface(canonicalClassName);
+            } else {
+                return new UmlClass(canonicalClassName);
+            }
+        } else {
+            String packagePath = canonicalClassName.substring(0, canonicalClassName.lastIndexOf('.'));
+            String className = canonicalClassName.substring(canonicalClassName.lastIndexOf('.') + 1);
+            UmlPackage root = buildPackageTreeFromPath(packagePath);
+            UmlPackage leaf = root;
+            while(leaf.hasChildrenPackages()) {
+                leaf = leaf.getPackages().get(0);//Single branch so okay
+            }
+
+            BaseClassifier baseClassifier = null;
+            if(asInterface) {
+                baseClassifier = new UmlInterface(canonicalClassName);
+                leaf.addInterface((UmlInterface)baseClassifier);
+            } else {
+                baseClassifier = new UmlClass(canonicalClassName);
+                leaf.addClass((UmlClass)baseClassifier);
+            }
+            return baseClassifier;
+        }
+    }
+
+    public static boolean hasAncestors(BaseClassifier classifier, String ancestorName) {
+        if(classifier.getName().equalsIgnoreCase(ancestorName)) {
+            return true;
+        } else {
+            return hasAncestors(classifier.getGeneralizations(), ancestorName);
+        }
+    }
+
+    protected static boolean hasAncestors(List<BaseClassifier> parents, String parentName) {
+        boolean found = false;
+        for(BaseClassifier parent : parents) {
+            if(parent.getName().equalsIgnoreCase(parentName)) {
+                found = true;
+            } else {
+                if(parent.getGeneralizations() != null) {
+                    found = hasAncestors(parent.getGeneralizations(), parentName);
+                }
+            }
+        }
+        return found;
+    }
+
+    public static UmlInterface cloneAndFlattenInterface(UmlInterface source) {
+        UmlInterface target = source.clone();
+
+        if (source.hasGeneralizations()) {
+            List<UmlProperty> properties = new ArrayList<>();
+            collectAttributes(properties, source);
+            target.setProperties(properties);
+        }
+
+        return target;
+    }
+
+    public static void collectAttributes(List<UmlProperty> properties, UmlInterface source) {
+        if (source.hasGeneralizations()) {
+            source.getGeneralizations().forEach(parent -> {
+                collectAttributes(properties, (UmlInterface) parent);
+            });
+        }
+        properties.addAll(source.getProperties());
     }
 
 }
