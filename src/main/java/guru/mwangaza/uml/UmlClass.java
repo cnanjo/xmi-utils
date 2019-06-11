@@ -170,6 +170,8 @@ public class UmlClass extends BaseClassifier {
 		UmlClass clone = (UmlClass)super.clone();
 		cloneClassifier(clone);
 		clone.setUmlPrimitive(this.isUmlPrimitive());
+		clone.setRealizationIds(this.getRealizationIds());
+		clone.setRealizations(this.getRealizations());
 		return clone;
 	}
 }
