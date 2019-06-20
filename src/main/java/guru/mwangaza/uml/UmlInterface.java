@@ -75,6 +75,8 @@ public class UmlInterface extends BaseClassifier {
     public UmlInterface clone() {
         UmlInterface clone = (UmlInterface)super.clone();
         cloneClassifier(clone);
+        clone.setOperations(new ArrayList<>());
+        clone.getOperations().addAll(this.getOperations());
         return clone;
     }
 }

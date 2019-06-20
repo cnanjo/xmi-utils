@@ -180,4 +180,17 @@ public class BaseClassifier extends UmlComponent implements Cloneable {
         clone.setGeneralizationIds(new ArrayList<String>());
         clone.getGeneralizationIds().addAll(this.getGeneralizationIds());
     }
+
+    public boolean findAncestorInSingleInheritanceHierarchy(String ancestorName) {
+        boolean found = false;
+        BaseClassifier currentAncestor = this;
+        while(currentAncestor.hasGeneralizations()) {
+            currentAncestor = currentAncestor.getFirstGeneralization();
+            if(currentAncestor.getName().equalsIgnoreCase(ancestorName)) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
 }

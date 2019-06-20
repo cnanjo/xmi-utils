@@ -10,28 +10,44 @@ public class UmlUtils {
     public static final Character DEFAULT_PACKAGE_DELIMITER = '.';
 
     /**
-     * Converts path into a package tree
+     * Converts path into a package containment hierarchy and returns the root of the path.
      *
      * @param path
      * @return
      */
     public static UmlPackage buildPackageTreeFromPath(String path) {
+        return buildPackageTreeFromPath(path, false);
+    }
+
+    /**
+     * Converts path into a package containment hierarchy.
+     *
+     * @param path The package input path
+     * @param returnLeaf If true return the leaf package in the path (package with no further children packages).
+     *                   Else, return the root of the package (package with no parent package).
+     * @return Either the leaf package or the root package of the containment hierarchy.
+     */
+    public static UmlPackage buildPackageTreeFromPath(String path, boolean returnLeaf) {
         UmlPackage root = null;
-        UmlPackage currentPackage = null;
+        UmlPackage currentLeafPackage = null;
         if(StringUtils.isNotBlank(path)) {
             String[] components = path.split("\\" + DEFAULT_PACKAGE_DELIMITER);
             for(int index = 0; index < components.length; index++) {
                 if(index == 0) {
                     root = new UmlPackage(components[index]);
-                    currentPackage = root;
+                    currentLeafPackage = root;
                 } else {
                     UmlPackage temp = new UmlPackage(components[index]);
-                    currentPackage.addPackage(temp);
-                    currentPackage = temp;
+                    currentLeafPackage.addPackage(temp);
+                    currentLeafPackage = temp;
                 }
             }
         }
-        return root;
+        if(returnLeaf) {
+            return currentLeafPackage;
+        } else {
+            return root;
+        }
     }
 
     /**
